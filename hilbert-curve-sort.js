@@ -16,7 +16,7 @@ export async function hilbertCurveSort2d(vectors) {
 	const maxSide = Math.max(maxX - minX, maxY - minY);
 	let step = 0;
 	let tmp = maxSide + 1;
-	while ((tmp >>= 1)) step++;
+	while ((tmp >>= 1) !== 0) step++;
 
 	const side = (1 << step) - 1;
 	let scaleX = side / (maxX - minX);
