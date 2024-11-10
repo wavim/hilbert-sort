@@ -1,7 +1,7 @@
 export async function hilbertCurveSort2d(vectors) {
 	// Recursion Base
 
-	// Equality / empty quadrant
+	// Equal vectors / empty quadrant
 	if (vectors.length < 2 || new Set(vectors.map(String)).size < 2) return vectors;
 
 	// Recursion Step
@@ -25,7 +25,7 @@ export async function hilbertCurveSort2d(vectors) {
 	if (!scaleX) scaleX = 1;
 	if (!scaleY) scaleY = 1;
 
-	// Normalize vectors to origin with scale 2^n
+	// Fit vectors to origin with scale 2^n
 	vectors = vectors.map(([x, y]) => [scaleX * (x - minX), scaleY * (y - minY)]);
 
 	let subside;
@@ -62,6 +62,6 @@ export async function hilbertCurveSort2d(vectors) {
 		hilbertCurveSort2d(quad10).then((res) => res.map(([x, y]) => [-y, -x])),
 	]);
 	
-	// De-normalize
+	// De-fitting
 	return sorted.flat().map(([x, y]) => [x / scaleX + minX, y / scaleY + minY]);
 }
