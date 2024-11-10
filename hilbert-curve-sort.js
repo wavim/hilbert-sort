@@ -1,10 +1,10 @@
 export async function hilbertCurveSort2d(vectors) {
-	// Recursion Base
+	// Base
 
 	// Equal vectors / empty quadrant
 	if (vectors.length < 2 || new Set(vectors.map(String)).size < 2) return vectors;
 
-	// Recursion Step
+	// Recursion
 
 	let [minX, minY] = ([maxX, maxY] = vectors[0]);
 	for (const [x, y] of vectors) {
@@ -14,7 +14,6 @@ export async function hilbertCurveSort2d(vectors) {
 		else if (y > maxY) maxY = y;
 	}
 	const maxSide = Math.max(maxX - minX, maxY - minY);
-
 	let step = 0;
 	let tmp = maxSide + 1;
 	while ((tmp >>= 1)) step++;
@@ -24,15 +23,15 @@ export async function hilbertCurveSort2d(vectors) {
 	let scaleY = side / (maxX - minX);
 	if (!scaleX) scaleX = 1;
 	if (!scaleY) scaleY = 1;
-
-	// Fit vectors to origin cube with scale 2^n
-	vectors = vectors.map(([x, y]) => [scaleX * (x - minX), scaleY * (y - minY)]);
-
 	const mid = step === 0 ? maxSide / 2 : (1 << (step - 1)) - 0.5;
 
 	// Sub-quadrants according to Gray code sequence G_2
 	const [quad00, quad01, quad11, quad10] = [[], [], [], []];
-	for (const [x, y] of vectors) {
+	for (let [x, y] of vectors) {
+		// Fit vector to origin cube with scale 2^n
+		x = scaleX * (x - minX);
+		y = scaleY * (y - minY);
+		
 		if (x < mid) {
 			if (y < mid) {
 				quad00.push([y, x]);
