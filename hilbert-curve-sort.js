@@ -30,7 +30,7 @@ export async function hilbertCurveSort2d(vectors) {
 
 	const mid = step === 0 ? maxSide / 2 : (1 << (step - 1)) - 0.5;
 
-	// Sub-quadrants according to Gray code G(2)
+	// Sub-quadrants according to Gray code sequence G_2
 	const [quad00, quad01, quad11, quad10] = [[], [], [], []];
 	for (const [x, y] of vectors) {
 		if (x < mid) {
