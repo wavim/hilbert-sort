@@ -20,8 +20,8 @@ and ensures that the resulting order is a total order:
 
 Another key property of Hilbert Curves is their locality-preserving nature, which is ideal for our purpose.
 
-The inverse mapping of $\mathbb{H}: \mathbb{R} \rightarrow \mathbb{R}^{2 | 3}$ is surjective,
-the algorithms will only return one of the possible values (consistent). This will affect the resulting ordering's total distance up to cube-fit offset and scaling factors.
+The inverse mapping of $\mathbb{H}: \mathbb{R}^{2 | 3} \rightarrow \mathbb{R}$ is surjective,
+algorithms will only return one of the possible values (consistent). This will affect the resulting ordering's total distance up to cube-fit offset and scaling factors.
 
 Some facts worth noting:
 - Sorting $\langle 0,1 \rangle^{2|3}$ (embedding of bit codes into $\mathbb{R}^{2|3}$)
