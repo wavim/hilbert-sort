@@ -21,9 +21,9 @@ and ensures that the resulting order is a total order:
 Another key property of Hilbert Curves is their locality-preserving nature, which is ideal for our purpose.
 
 The inverse mapping of $\mathbb{H}: \mathbb{R} \rightarrow \mathbb{R}^{2 | 3}$ is surjective,
-the algorithm will only return one of the possible values (consistent). However, this won't affect the resulting ordering's total distance.
+the algorithms will only return one of the possible values (consistent). This will affect the resulting ordering's total distance up to cube-fit offset and scaling factors.
 
 Some facts worth noting:
-- Sorting $\{0,1\}^{2|3}$ (embedding of bit codes into $\mathbb{R}^{2|3}$)
+- Sorting $\langle 0,1 \rangle^{2|3}$ (embedding of bit codes into $\mathbb{R}^{2|3}$)
 gives the Gray Code sequence $\mathbb{G}_{2|3}$ (due to an elegant connection between the Gray Code and the Hilbert Curve).
-- Sorting $\{0, \dots, 2^n\}^{2|3}$ gives a correctly oriented Hilbert Curve, where $\mathbb{H}_1$ is constructed by $\mathbb{G}_{2|3}$ (interpreting the bit $\mathbb{G}(n)$ as $x_n$) and the k-th iteration curve traces $\mathbb{H}_{k-j}$ curves.
+- Sorting $\langle 0, \dots, 2^n \rangle^{2|3}$ gives a correctly oriented Hilbert Curve, by means of having $\mathbb{H}\_1$ constructed by $\mathbb{G}\_{2|3}$ (interpreting the bit $\mathbb{G}(n)$ as $x_n$) and with the k-th iteration curve tracing $\mathbb{H}_{k-j}$, $0 \le j \le k$ curves.
