@@ -31,20 +31,21 @@ export async function hilbertCurveSort2d(vectors) {
 		// Fit vector to origin cube with scale 2^n
 		x = scaleX * (x - minX);
 		y = scaleY * (y - minY);
-		
-		if (x < mid) {
-			if (y < mid) {
+
+		switch (((x > mid) << 1) + (y > mid)) {
+			case 0b00:
 				quad00.push([y, x]);
-				continue;
-			}
-			quad01.push([x, y]);
-			continue;
+				break;
+			case 0b01:
+				quad01.push([x, y]);
+				break;
+			case 0b11:
+				quad11.push([x, y]);
+				break;
+			case 0b10:
+				quad10.push([-y, -x]);
+				break;
 		}
-		if (y > mid) {
-			quad11.push([x, y]);
-			continue;
-		}
-		quad10.push([-y, -x]);
 	}
 
 	const sorted = await Promise.all([
