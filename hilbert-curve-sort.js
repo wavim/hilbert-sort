@@ -25,17 +25,10 @@ export async function hilbertCurveSort2d(vectors) {
 	if (!scaleX) scaleX = 1;
 	if (!scaleY) scaleY = 1;
 
-	// Fit vectors to origin with scale 2^n
+	// Fit vectors to origin cube with scale 2^n
 	vectors = vectors.map(([x, y]) => [scaleX * (x - minX), scaleY * (y - minY)]);
 
-	let subside;
-	let mid;
-	if (step) {
-		subside = 1 << (step - 1);
-		mid = subside - 0.5;
-	} else {
-		subside = mid = maxSide / 2;
-	}
+	const mid = step === 0 ? maxSide / 2 : (1 << (step - 1)) - 0.5;
 
 	// Sub-quadrants according to Gray code G(2)
 	const [quad00, quad01, quad11, quad10] = [[], [], [], []];
@@ -61,7 +54,7 @@ export async function hilbertCurveSort2d(vectors) {
 		hilbertCurveSort2d(quad11),
 		hilbertCurveSort2d(quad10).then((res) => res.map(([x, y]) => [-y, -x])),
 	]);
-	
+
 	// De-fitting
 	return sorted.flat().map(([x, y]) => [x / scaleX + minX, y / scaleY + minY]);
 }
