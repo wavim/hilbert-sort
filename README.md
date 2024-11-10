@@ -18,4 +18,4 @@ Another key property of Hilbert Curves is their locality-preserving nature, whic
 rather than a Totally Ordered Set, due to the inverse mapping of $\mathbb{H}: \mathbb{R} \rightarrow \mathbb{R}^{2 | 3}$ being surjective,
 and the algorithm can only return one of the possible values.
 The criterion used to pick the result value is as follows: if sorting $[0, 2^n)^2 \cap \mathbb{N}^2$ (embedding of bit codes into $\mathbb{R}^2$)
-gives the Gray Code ordering $\mathbb{G}(n)$ (this is due to a elegant connection between the Gray Code and the Hilbert Curve).
+gives the Gray Code ordering $\mathbb{G}_n$ (due to an elegant connection between the Gray Code and the Hilbert Curve).
