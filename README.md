@@ -10,8 +10,7 @@ Mapping from a hypercube (or else it could be fitted to a hypercube) and the rea
 can be achieved through the use of Hilbert Curves,
 which are space-filling curves whose limit is the n-hypercube.
 Neighboring tuples in the input space will also be mapped close to each other on the Hilbert Curve.
-This mapping preserves the spatial relationships between the input points,
-and ensures that the resulting order is a total order:
+This mapping preserves the spatial relationships between the input points, and ensures that the resulting order is a total order:
 
 - Total - $a \le b \lor b \le a$
 - Reflexivity - $a \le a$

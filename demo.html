@@ -165,31 +165,38 @@
 			}
 
 			section {
-				border: 3px black solid;
+				border-top: 3px black solid;
 				width: 100vw;
 				padding-bottom: 20px;
 			}
-
-			#pts2d-demo canvas {
-				background-color: aliceblue;
-				margin-right: 4vw;
-			}
-			#pts2d-demo textarea {
-				width: 25vw;
-				height: 30vw;
-				resize: none;
-				margin-bottom: 5px;
-			}
-			#pts2d-actions button {
+			textarea {
 				width: 10vw;
-				height: 5vw;
+				height: 15vw;
 				font-size: 1.7vw;
+				resize: none;
 			}
-			#pts2d-actions input {
+			input {
 				width: 10vw;
 				height: 3vw;
-				margin-top: 5px;
 				font-size: 1.5vw;
+			}
+			button {
+				width: 10vw;
+				height: 5vw;
+				margin: 10px;
+				font-size: 1.7vw;
+			}
+
+			#pts2d-demo canvas {
+				background-color: whitesmoke;
+				border: 3px lightgrey solid;
+				margin-right: 4vw;
+			}
+			#colors-canvases {
+				margin-bottom: 20px;
+			}
+			#colors-actions p {
+				width: 10vw;
 			}
 		</style>
 	</head>
@@ -203,76 +210,170 @@
 				<div id="pts2d-demo" class="flex">
 					<canvas>sorted 2d points connected in order</canvas>
 					<div id="pts2d-actions" class="flex col">
-						<textarea
-							placeholder="1 1
-4 5
-1 4"
-						></textarea>
+						<textarea></textarea>
 						<button id="pts2d-set">Set</button>
 						<br />
+						<br />
+						<input type="number" placeholder="Num Points" />
 						<button id="pts2d-random">Random</button>
-						<input type="number" placeholder="Number Pts" />
 					</div>
 				</div>
 			</section>
 			<br />
+			<section id="colors" class="flex col">
+				<h2>Colors (sRGB)</h2>
+				<div id="colors-demo" class="flex col">
+					<div id="colors-canvases" class="flex col">
+						<canvas id="colors-original">original color ordering</canvas>
+						<br />
+						<canvas id="colors-sorted">sorted color ordering</canvas>
+					</div>
+					<div id="colors-actions" class="flex">
+						<textarea></textarea>
+						<button id="colors-set">Set</button>
+						<p></p>
+						<input type="number" placeholder="Num Colors" />
+						<button id="colors-random">Random</button>
+					</div>
+				</div>
+			</section>
 		</main>
 		<script>
 			const pageWidth = window.innerWidth;
 			const pageHeight = window.innerHeight;
 
+			// 2D Points Section
 			const pts2dCvs = document.querySelector("#pts2d-demo canvas");
 			const pts2dPts = document.querySelector("#pts2d-actions textarea");
 			const pts2dSet = document.querySelector("#pts2d-set");
+			const pts2dRdmN = document.querySelector("#pts2d-actions input");
 			const pts2dRdm = document.querySelector("#pts2d-random");
-			const pts2dN = document.querySelector("#pts2d-actions input");
 
+			const pts2dCtx = pts2dCvs.getContext("2d");
 			const pts2dSide = pageWidth * 0.45;
-			const pts2dCtxt = pts2dCvs.getContext("2d");
 			pts2dCvs.setAttribute("width", pts2dSide);
 			pts2dCvs.setAttribute("height", pts2dSide);
 
 			async function draw2dPts(pts) {
-				pts2dCtxt.clearRect(0, 0, pts2dSide, pts2dSide);
+				pts2dCtx.clearRect(0, 0, pts2dSide, pts2dSide);
+
 				const sorted = await hilbertCurveSort2d(pts);
-				pts2dCtxt.moveTo(...sorted[0]);
-				pts2dCtxt.beginPath();
-				for (const [x, y] of sorted) {
-					if (sorted.length <= 500) pts2dCtxt.fillRect(x - 3, y - 3, 6, 6);
-					pts2dCtxt.lineTo(x, y);
+				pts2dCtx.moveTo(...sorted[0]);
+				pts2dCtx.beginPath();
+				for (let [x, y] of sorted) {
+					y = pts2dSide - y;
+					if (sorted.length <= 500) pts2dCtx.fillRect(x - 4, y - 4, 8, 8);
+					pts2dCtx.lineTo(x, y);
 				}
-				pts2dCtxt.moveTo(...sorted[0]);
-				pts2dCtxt.closePath();
-				pts2dCtxt.stroke();
-			}
-			function drawRdmPts(n) {
-				const pts = [...Array(n)].map(() => [rand(0, pts2dSide), rand(0, pts2dSide)]);
-				draw2dPts(pts);
+				pts2dCtx.moveTo(...sorted[0]);
+				pts2dCtx.closePath();
+				pts2dCtx.stroke();
 			}
 
-			drawRdmPts(100);
-			pts2dSet.addEventListener("click", () => {
-				try {
-					const pts = pts2dPts.value.split("\n").map((coords) => coords.split(" ").map(Number));
-					let [minX, minY] = ([maxX, maxY] = pts[0]);
-					for (const [x, y] of pts) {
-						if (x < minX) minX = x;
-						else if (x > maxX) maxX = x;
-						if (y < minY) minY = y;
-						else if (y > maxY) maxY = y;
-					}
-					const scaleX = (pts2dSide - 20) / (maxX - minX);
-					const scaleY = (pts2dSide - 20) / (maxY - minY);
-					draw2dPts(pts.map(([x, y]) => [scaleX * x - minX + 10, scaleY * y - minY + 10]));
-				} catch {
-					pts2dPts.value = "";
+			function drawSetPts(_pts) {
+				const pts = (_pts ?? pts2dPts.value)
+					.trim()
+					.split("\n")
+					.map((coords) => coords.split(" ").map(Number))
+					.filter((vec) => vec.length === 2 && vec.every(Number.isFinite));
+				if (pts.length < 2) {
+					drawSetPts(pts2dPts.getAttribute("placeholder"));
+					return;
 				}
-			});
+				let [minX, minY] = ([maxX, maxY] = pts[0]);
+				for (const [x, y] of pts) {
+					if (x < minX) minX = x;
+					else if (x > maxX) maxX = x;
+					if (y < minY) minY = y;
+					else if (y > maxY) maxY = y;
+				}
+				const scaleX = (pts2dSide - 40) / (maxX - minX);
+				const scaleY = (pts2dSide - 40) / (maxY - minY);
+				draw2dPts(pts.map(([x, y]) => [scaleX * x - minX + 20, scaleY * y - minY + 20]));
+			}
+			pts2dSet.addEventListener("click", () => drawSetPts());
 			pts2dRdm.addEventListener("click", () => {
-				let n = Number(pts2dN.value);
+				let n = Number(pts2dRdmN.value);
 				if (!n) n = 100;
-				drawRdmPts(n);
+				const pts = [...Array(n)].map(() => [rand(0, pts2dSide), rand(0, pts2dSide)]);
+				draw2dPts(pts);
 			});
+
+			pts2dPts.setAttribute("placeholder", "0 0\n0 1\n1 0\n1 1");
+			drawSetPts();
+
+			// Colors (sRGB) Section
+			const clrsOriginalCvs = document.querySelector("#colors-original");
+			const clrsSortedCvs = document.querySelector("#colors-sorted");
+			const clrsInput = document.querySelector("#colors-actions textarea");
+			const clrsSet = document.querySelector("#colors-set");
+			const clrsRdmN = document.querySelector("#colors-actions input");
+			const clrsRdm = document.querySelector("#colors-random");
+
+			const clrsOriginalCtx = clrsOriginalCvs.getContext("2d");
+			const clrsSortedCtx = clrsSortedCvs.getContext("2d");
+			const clrsCvsWidth = pageWidth * 0.9;
+			const clrsCvsHeight = pageHeight * 0.1;
+			clrsOriginalCvs.setAttribute("width", clrsCvsWidth);
+			clrsOriginalCvs.setAttribute("height", clrsCvsHeight);
+			clrsSortedCvs.setAttribute("width", clrsCvsWidth);
+			clrsSortedCvs.setAttribute("height", clrsCvsHeight);
+
+			async function drawClrs(clrs) {
+				clrsOriginalCtx.clearRect(0, 0, clrsCvsWidth, clrsCvsHeight);
+				clrsSortedCtx.clearRect(0, 0, clrsCvsWidth, clrsCvsHeight);
+				const clrWidth = clrsCvsWidth / clrs.length;
+
+				for (let i = 0; i < clrs.length; i++) {
+					const [r, g, b] = clrs[i];
+					clrsOriginalCtx.fillStyle = `rgb(${r} ${g} ${b})`;
+					clrsOriginalCtx.fillRect(i * clrWidth, 0, clrWidth, clrsCvsHeight);
+				}
+
+				const sorted = await hilbertCurveSort3d(clrs);
+				for (let i = 0; i < sorted.length; i++) {
+					const [r, g, b] = sorted[i];
+					clrsSortedCtx.fillStyle = `rgb(${r} ${g} ${b})`;
+					clrsSortedCtx.fillRect(i * clrWidth, 0, clrWidth, clrsCvsHeight);
+				}
+			}
+
+			function drawSetClrs(_clrs) {
+				const clrs = (_clrs ?? clrsInput.value)
+					.trim()
+					.split("\n")
+					.map((value) => value.split(" ").map(Number))
+					.filter((rgb) => rgb.length === 3 && rgb.every(Number.isFinite));
+				if (clrs.length < 2) {
+					drawSetClrs(clrsInput.getAttribute("placeholder"));
+					return;
+				}
+				drawClrs(clrs);
+			}
+			clrsSet.addEventListener("click", () => drawSetClrs());
+
+			function rdmClrs(n) {
+				return (clrs = [...Array(n)].map(() => [rand(0, 255), rand(0, 255), rand(0, 255)]));
+			}
+			clrsRdm.addEventListener("click", () => {
+				let n = Number(clrsRdmN.value);
+				if (!n) n = 100;
+				drawClrs(rdmClrs(n));
+			});
+
+			// clrsInput.setAttribute(
+			// 	"placeholder",
+			// 	rdmClrs(1024)
+			// 		.map((rgb) => rgb.map(Math.trunc).join(" "))
+			// 		.join("\n"),
+			// );
+			
+			// const step = 5;
+			const step = 15;
+			const bits = [...Array(Math.trunc(255 / step) + 1).keys()].map((b) => step * b);
+			const rgbUniform = bits.flatMap((r) => bits.flatMap((g) => bits.map((b) => [r, g, b])));
+			clrsInput.setAttribute("placeholder", rgbUniform.map((rgb) => rgb.join(" ")).join("\n"));
+			drawSetClrs();
 		</script>
 	</body>
 </html>
