@@ -24,5 +24,7 @@ Algorithms will only return one of the possible values, consistently.
 
 Some facts worth noting:
 - Sorting $\langle 0,1 \rangle^{2|3}$ (embedding of bit codes into $\mathbb{R}^{2|3}$)
-gives the Gray Code sequence $\mathbb{G}_{2|3}$ (due to an elegant connection between the Gray Code and the Hilbert Curve).
-- Sorting $\langle 0, \dots, 2^n \rangle^{2|3}$ gives a correctly oriented Hilbert Curve, by means of having $\mathbb{H}_1$ constructed by $\mathbb{G}_{2|3}$ (interpreting the bit $\mathbb{G}(n)$ as $x_n$) and with the k-th iteration curve tracing $\mathbb{H}_{k-j}$, $0 \le j \le k$ curves.
+gives the Gray Code sequence $G_{2|3}$ (due to an elegant connection between the Gray Code and the Hilbert Curve).
+- Sorting $\langle 0, \dots, 2^n \rangle^{2|3}$ gives a correctly oriented Hilbert Curve, by means of having $\mathbb{H}\_1$ constructed by $G\_{2|3}$ (interpreting the bit $G(n)$ as $x\_n$) and with the k-th iteration curve tracing $\mathbb{H}\_{k-j}$, $0 \le j \le k$ curves.
+
+The algorithms implemented here are recursion-based, with approximate time complexity $O(n)$ where n is amount of points in fitted-cube and rather high space complexity. More efficient implementations in C without using recursion could be achieved through insights from _Alternative Algorithm for Hilbert's Space-Filling Curve - ARTHUR R. BUTZ, IEEE April 1971_.
