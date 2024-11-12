@@ -94,6 +94,6 @@ Due to the heavy use of recursion, asynchronous operations is used to spread com
 
 ### Misc
 
-Generalization to even higher dimensions are possible, but I only implemented $\mathbb{R}^2$ and $\mathbb{R}^3$ algorithms here, in JS (I know, I know, it's slow, but whatever).
+Generalization to even higher dimensions is possible, but I only implemented $\mathbb{R}^2$ and $\mathbb{R}^3$ algorithms here, in JS (I know, I know, it's slow, but whatever).
 
 Non-recursive implementation in C and generalization to all dimensions could be found at [Non-recursive Hilbert Curve on GitHub](https://github.com/adishavit/hilbert/tree/master).
