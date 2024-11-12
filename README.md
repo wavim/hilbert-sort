@@ -76,7 +76,7 @@ I included an interactive [Demo Page](assets/demo.html) which could be downloade
 > The result from sorting random points will roughly estimate a hilbert curve.
 
 - Colors (sRGB) sorting - sorting sRGB colors, using $(R, G, B)$ as the color vector, with a pre/post-sort comparison.
-> The result will give a more overall gradient-like sequence of colors.  
+> The result would be more gradient-like (overall) than the raw version.  
 > HSL might give better results (?), you could experiment with it freely, through minor changes to the demo.html script source code.
 
 ### Notes
