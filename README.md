@@ -70,14 +70,14 @@ The recursion base will be when there are only 1 vector or none left, or if all 
 The recursion step will fit the vectors to a hypercube with scale $2^k$, run recursion, and return de-fitted result vectors.
 
 ### Demo
-I included an interactive [Demo Page](assets/demo.html) which could be downloaded directly (no additional assets have to be downloaded). It contains demos of:
+I included an interactive [Demo Page](assets/demo.html) which could be downloaded directly and opened in a browser (no additional assets have to be downloaded). It contains demos of:
 
 - 2-D points sorting - connects set / random 2d points according to the sorted sequence.
 > The result from sorting random points will roughly estimate a hilbert curve.
 
 - Colors (sRGB) sorting - sorting sRGB colors, using $(R, G, B)$ as the color vector, with a pre/post-sort comparison.
 > The result will give a more overall gradient-like sequence of colors.  
-> HSL might give better results (?), and you could experiment with it freely, through minor changes to the demo.html script source code.
+> HSL might give better results (?), you could experiment with it freely, through minor changes to the demo.html script source code.
 
 ### Notes
 
