@@ -289,7 +289,7 @@
 				}
 				const scaleX = (pts2dSide - 40) / (maxX - minX);
 				const scaleY = (pts2dSide - 40) / (maxY - minY);
-				draw2dPts(pts.map(([x, y]) => [scaleX * x - minX + 20, scaleY * y - minY + 20]));
+				draw2dPts(pts.map(([x, y]) => [scaleX * (x - minX) + 20, scaleY * (y - minY) + 20]));
 			}
 			pts2dSet.addEventListener("click", () => drawSetPts());
 			pts2dRdm.addEventListener("click", () => {
@@ -361,15 +361,7 @@
 				drawClrs(rdmClrs(n));
 			});
 
-			// clrsInput.setAttribute(
-			// 	"placeholder",
-			// 	rdmClrs(1024)
-			// 		.map((rgb) => rgb.map(Math.trunc).join(" "))
-			// 		.join("\n"),
-			// );
-			
-			// const step = 5;
-			const step = 15;
+			const step = 25;
 			const bits = [...Array(Math.trunc(255 / step) + 1).keys()].map((b) => step * b);
 			const rgbUniform = bits.flatMap((r) => bits.flatMap((g) => bits.map((b) => [r, g, b])));
 			clrsInput.setAttribute("placeholder", rgbUniform.map((rgb) => rgb.join(" ")).join("\n"));
