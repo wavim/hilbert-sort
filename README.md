@@ -44,9 +44,9 @@ Some key properties of the Hilbert Curves that allows us to implement a recursiv
 
 - Fractalness - Every iteration $\mathbb{H}\_n$ implicitly traces (scaled) $\mathbb{H}\_{n-k}, k \le n$ curves.
 
->![$\mathbb{H}_1$ Overlay](assets/H1_overlay.jpg)
-> ![$\mathbb{H}_2$ Overlay](assets/H2_overlay.jpg)
-> ![$\mathbb{H}_3$ Overlay](assets/H3_overlay.jpg)  
+>![$\mathbb{H}_1$ Overlay](assets/images/H1_overlay.jpg)
+> ![$\mathbb{H}_2$ Overlay](assets/images/H2_overlay.jpg)
+> ![$\mathbb{H}_3$ Overlay](assets/images/H3_overlay.jpg)  
 > _2d Hilbert Curves Overlay 1st-3rd Iterations ~ Fractalness_  
 > _Images by Geoff Richards (Qef) - Own work, Public Domain_
 
