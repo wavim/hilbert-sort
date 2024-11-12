@@ -37,7 +37,9 @@ $\mathbb{R}^n$ with the ordering will possess a total order.
 
 ### Implementation
 
-Some key properties of the Hilbert Curves that allows us to implement a recursive algorithm is, that they are locality-preserving space-filling curves, and that they are fractals. Details below.
+Some key properties of the Hilbert Curves that allows us to implement a recursive algorithm is, 
+that they are locality-preserving space-filling curves,
+and that they are fractals. Details below.
 
 - Locality-preserving - Points on the Hilbert Curve converges to a definite point as iteration count increases.
 > This is in general not true for other curves, where the resulting points might shift vastly over iterations.
@@ -81,7 +83,8 @@ I included an interactive [Demo Page](assets/demo.html) which could be downloade
 
 ### Notes
 
-The time complexity of the algorithms is estimated to be $O(n)$ where n is the number of vectors in the hypercube (complexity analysed w.r.t. number of function calls). This, however, ignores constant factors and additional time required for recursion function calls.
+The time complexity of the algorithms is estimated to be $O(n)$ where n is the number of vectors in the hypercube
+(complexity analysed w.r.t. number of function calls). This, however, ignores constant factors and overhead of recursion function calls.
 
 Space complexity of the algorithms is expected to be high, as recursion is heavily used.
 
