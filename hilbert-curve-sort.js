@@ -15,6 +15,7 @@ export async function h2CurveSort(vec2s) {
 	const scaleX = maxSide / sideX;
 	const scaleY = maxSide / sideY;
 	const normVec2s = vec2s.map(([x, y]) => [scaleX * (x - minX), scaleY * (y - minY)]);
+	// Return de-scaled and de-scaled results from actual sort
 	return (await _h2CurveSort(normVec2s, maxSide)).map(([x, y]) => [x / scaleX + minX, y / scaleY + minY]);
 }
 
@@ -39,6 +40,7 @@ export async function h3CurveSort(vec3s) {
 	const scaleY = maxSide / sideY;
 	const scaleZ = maxSide / sideZ;
 	const normVec3s = vec3s.map(([x, y, z]) => [scaleX * (x - minX), scaleY * (y - minY), scaleZ * (z - minZ)]);
+	// Return de-scaled and de-scaled results from actual sort
 	return (await _h3CurveSort(normVec3s, maxSide)).map(([x, y, z]) => [
 		x / scaleX + minX,
 		y / scaleY + minY,
@@ -80,10 +82,11 @@ async function _h2CurveSort(vec2s, side) {
 		quads[quad].push(vec2);
 	}
 
+	// Transform quadrants to U_2(1)
 	const sorted = await Promise.all(
 		quads.map(async (quadVec2s, quad) => await _h2CurveSort(quadVec2s.map(maps[quad]), mid)),
 	);
-	// Order quadrants w.r.t G_2
+	// Order quadrants w.r.t G_2 and de-transform
 	return GRAY_2.flatMap((quad) => sorted[quad].map(inverseMaps[quad]));
 }
 
@@ -125,9 +128,10 @@ async function _h3CurveSort(vec3s, side) {
 		octs[oct].push(vec3);
 	}
 
+	// Transform octants to U_3(1)
 	const sorted = await Promise.all(
 		octs.map(async (octVec3s, oct) => await _h3CurveSort(octVec3s.map(maps[oct]), mid)),
 	);
-	// Order octants w.r.t G_3
+	// Order octants w.r.t G_3 and de-transform
 	return GRAY_3.flatMap((oct) => sorted[oct].map(inverseMaps[oct]));
 }
