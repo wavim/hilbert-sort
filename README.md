@@ -1,4 +1,4 @@
-### Overview
+<!-- ### Overview
 
 This repository contains recursion-based implementation of Hilbert Curve Sorting algorithms for 2-tuples and 3-tuples.
 
@@ -90,10 +90,10 @@ Space complexity of the algorithms is expected to be high, as recursion is heavi
 
 Overall performance should be pretty good as a toy, but since $n$ scales with $(s + 1)^n$, where $s$ is side length of hypercube and $n$ is hypercube's dimension, this might get extremely computational and memory demanding as $s$ scales.
 
-Due to the heavy use of recursion, asynchronous operations is used to spread computational load.
+Due to the heavy use of recursion, asynchronous operations are used to spread computational load.
 
 ### Misc
 
 Generalization to even higher dimensions is possible, but I only implemented $\mathbb{R}^2$ and $\mathbb{R}^3$ algorithms here, in JS (I know, I know, it's slow, but whatever).
 
-Non-recursive implementation in C and generalization to all dimensions could be found at [Non-recursive Hilbert Curve on GitHub](https://github.com/adishavit/hilbert/tree/master).
+Non-recursive implementation in C and generalization to all dimensions could be found at [Non-recursive Hilbert Curve on GitHub](https://github.com/adishavit/hilbert/tree/master). -->

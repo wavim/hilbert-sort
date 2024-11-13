@@ -1,74 +1,26 @@
-export async function hilbertCurveSort2d(vectors) {
-	// Base
-
-	// Equal vectors / empty quadrant
-	if (vectors.length < 2 || new Set(vectors.map(String)).size < 2) return vectors;
-
-	// Recursion
-
-	let [minX, minY] = ([maxX, maxY] = vectors[0]);
-	for (const [x, y] of vectors) {
+export async function h2CurveSort(vec2s) {
+	let [minX, minY] = ([maxX, maxY] = vec2s[0]);
+	for (let i = 1; i < vec2s.length; i++) {
+		const [x, y] = vec2s[i];
 		if (x < minX) minX = x;
 		else if (x > maxX) maxX = x;
 		if (y < minY) minY = y;
 		else if (y > maxY) maxY = y;
 	}
-	const maxSide = Math.max(maxX - minX, maxY - minY);
-	let step = 0;
-	let tmp = maxSide + 1;
-	while ((tmp >>= 1) !== 0) step++;
+	const sideX = maxX - minX;
+	const sideY = maxY - minY;
+	const maxSide = Math.max(sideX, sideY);
 
-	const side = (1 << step) - 1;
-	let scaleX = side / (maxX - minX);
-	let scaleY = side / (maxY - minY);
-	if (scaleX === 0 || !Number.isFinite(scaleX)) scaleX = 1;
-	if (scaleY === 0 || !Number.isFinite(scaleY)) scaleY = 1;
-	const mid = step === 0 ? maxSide / 2 : (1 << (step - 1)) - 0.5;
-
-	// Sub-quadrants according to Gray code sequence G_2
-	const [q00, q01, q11, q10] = [[], [], [], []];
-	for (let [x, y] of vectors) {
-		// Fit vector to origin square with scale 2^n
-		x = scaleX * (x - minX);
-		y = scaleY * (y - minY);
-
-		switch (((x > mid) << 1) + (y > mid)) {
-			case 0b00:
-				q00.push([y, x]);
-				break;
-			case 0b01:
-				q01.push([x, y]);
-				break;
-			case 0b11:
-				q11.push([x, y]);
-				break;
-			case 0b10:
-				q10.push([-y, -x]);
-				break;
-		}
-	}
-
-	const sorted = await Promise.all([
-		hilbertCurveSort2d(q00).then((res) => res.map(([x, y]) => [y, x])),
-		hilbertCurveSort2d(q01),
-		hilbertCurveSort2d(q11),
-		hilbertCurveSort2d(q10).then((res) => res.map(([x, y]) => [-y, -x])),
-	]);
-
-	// De-fitting
-	return sorted.flat().map(([x, y]) => [x / scaleX + minX, y / scaleY + minY]);
+	const scaleX = maxSide / sideX;
+	const scaleY = maxSide / sideY;
+	const normVec2s = vec2s.map(([x, y]) => [scaleX * (x - minX), scaleY * (y - minY)]);
+	return (await _h2CurveSort(normVec2s, maxSide)).map(([x, y]) => [x / scaleX + minX, y / scaleY + minY]);
 }
 
-export async function hilbertCurveSort3d(vectors) {
-	// Base
-
-	// Equal vectors / empty quadrant
-	if (vectors.length < 2 || new Set(vectors.map(String)).size < 2) return vectors;
-
-	// Recursion
-
-	let [minX, minY, minZ] = ([maxX, maxY, maxZ] = vectors[0]);
-	for (const [x, y, z] of vectors) {
+export async function h3CurveSort(vec3s) {
+	let [minX, minY, minZ] = ([maxX, maxY, maxZ] = vec3s[0]);
+	for (let i = 1; i < vec3s.length; i++) {
+		const [x, y, z] = vec3s[i];
 		if (x < minX) minX = x;
 		else if (x > maxX) maxX = x;
 		if (y < minY) minY = y;
@@ -76,67 +28,93 @@ export async function hilbertCurveSort3d(vectors) {
 		if (z < minZ) minZ = z;
 		else if (z > maxZ) maxZ = z;
 	}
-	const maxSide = Math.max(maxX - minX, maxY - minY, maxZ - minZ);
-	let step = 0;
-	let tmp = maxSide + 1;
-	while ((tmp >>= 1) !== 0) step++;
+	const sideX = maxX - minX;
+	const sideY = maxY - minY;
+	const sideZ = maxZ - minZ;
+	const maxSide = Math.max(sideX, sideY, sideZ);
 
-	const side = (1 << step) - 1;
-	let scaleX = side / (maxX - minX);
-	let scaleY = side / (maxY - minY);
-	let scaleZ = side / (maxZ - minZ);
-	if (scaleX === 0 || !Number.isFinite(scaleX)) scaleX = 1;
-	if (scaleY === 0 || !Number.isFinite(scaleY)) scaleY = 1;
-	if (scaleZ === 0 || !Number.isFinite(scaleZ)) scaleZ = 1;
-	const mid = step === 0 ? maxSide / 2 : (1 << (step - 1)) - 0.5;
+	const scaleX = maxSide / sideX;
+	const scaleY = maxSide / sideY;
+	const scaleZ = maxSide / sideZ;
+	const normVec3s = vec3s.map(([x, y, z]) => [scaleX * (x - minX), scaleY * (y - minY), scaleZ * (z - minZ)]);
+	return (await _h3CurveSort(normVec3s, maxSide)).map(([x, y, z]) => [
+		x / scaleX + minX,
+		y / scaleY + minY,
+		z / scaleZ + minZ,
+	]);
+}
 
-	// Sub-octants according to Gray code sequence G_3
-	const [o000, o001, o011, o010, o110, o111, o101, o100] = [[], [], [], [], [], [], [], []];
-	for (let [x, y, z] of vectors) {
-		// Fit vector to origin cube with scale 2^n
-		x = scaleX * (x - minX);
-		y = scaleY * (y - minY);
-		z = scaleZ * (z - minZ);
+const grayCode = (n) => [...Array(2 ** n).keys()].map((bit) => bit ^ (bit >> 1));
+const GRAY_2 = grayCode(2);
+const GRAY_3 = grayCode(3);
 
-		switch (((x > mid) << 2) + ((y > mid) << 1) + (z > mid)) {
-			case 0b000:
-				o000.push([z, x, y]);
-				break;
-			case 0b001:
-				o001.push([y, z, x]);
-				break;
-			case 0b011:
-				o011.push([y, z, x]);
-				break;
-			case 0b010:
-				o010.push([x, -y, -z]);
-				break;
-			case 0b110:
-				o110.push([x, -y, -z]);
-				break;
-			case 0b111:
-				o111.push([-y, z, -x]);
-				break;
-			case 0b101:
-				o101.push([-y, z, -x]);
-				break;
-			case 0b100:
-				o100.push([-z, -x, y]);
-				break;
-		}
+async function _h2CurveSort(vec2s, side) {
+	if (vec2s.length < 2 || new Set(vec2s.map(String)).size === 1) return vec2s;
+
+	const mid = side / 2;
+	const maps = {
+		0b00: ([x, y]) => [y, x],
+		0b01: ([x, y]) => [x, y - mid],
+		0b11: ([x, y]) => [x - mid, y - mid],
+		0b10: ([x, y]) => [mid - y, side - x],
+	};
+	const inverseMaps = {
+		0b00: ([x, y]) => [y, x],
+		0b01: ([x, y]) => [x, y + mid],
+		0b11: ([x, y]) => [x + mid, y + mid],
+		0b10: ([x, y]) => [side - y, mid - x],
+	};
+
+	const quads = [...Array(4)].map(() => []);
+	for (const vec2 of vec2s) {
+		const bitX = vec2[0] > mid;
+		const bitY = vec2[1] > mid;
+		const quad = (bitX << 1) + bitY;
+		quads[quad].push(vec2);
 	}
 
-	const sorted = await Promise.all([
-		hilbertCurveSort3d(o000).then((res) => res.map(([x, y, z]) => [y, z, x])),
-		hilbertCurveSort3d(o001).then((res) => res.map(([x, y, z]) => [z, x, y])),
-		hilbertCurveSort3d(o011).then((res) => res.map(([x, y, z]) => [z, x, y])),
-		hilbertCurveSort3d(o010).then((res) => res.map(([x, y, z]) => [x, -y, -z])),
-		hilbertCurveSort3d(o110).then((res) => res.map(([x, y, z]) => [x, -y, -z])),
-		hilbertCurveSort3d(o111).then((res) => res.map(([x, y, z]) => [-z, -x, y])),
-		hilbertCurveSort3d(o101).then((res) => res.map(([x, y, z]) => [-z, -x, y])),
-		hilbertCurveSort3d(o100).then((res) => res.map(([x, y, z]) => [-y, z, -x])),
-	]);
+	const sorted = await Promise.all(
+		quads.map(async (quadVec2s, quad) => await _h2CurveSort(quadVec2s.map(maps[quad]), mid)),
+	);
+	return GRAY_2.flatMap((quad) => sorted[quad].map(inverseMaps[quad]));
+}
 
-	// De-fitting
-	return sorted.flat().map(([x, y, z]) => [x / scaleX + minX, y / scaleY + minY, z / scaleZ + minZ]);
+async function _h3CurveSort(vec3s, side) {
+	if (vec3s.length < 2 || new Set(vec3s.map(String)).size === 1) return vec3s;
+
+	const mid = side / 2;
+	const maps = {
+		0b000: ([x, y, z]) => [z, x, y],
+		0b001: ([x, y, z]) => [y, z - mid, x],
+		0b011: ([x, y, z]) => [y - mid, z - mid, x],
+		0b010: ([x, y, z]) => [x, side - y, mid - z],
+		0b110: ([x, y, z]) => [x - mid, side - y, mid - z],
+		0b111: ([x, y, z]) => [side - y, z - mid, side - x],
+		0b101: ([x, y, z]) => [mid - y, z - mid, side - x],
+		0b100: ([x, y, z]) => [mid - z, side - x, y],
+	};
+	const inverseMaps = {
+		0b000: ([x, y, z]) => [y, z, x],
+		0b001: ([x, y, z]) => [z, x, y + mid],
+		0b011: ([x, y, z]) => [z, x + mid, y + mid],
+		0b010: ([x, y, z]) => [x, side - y, mid - z],
+		0b110: ([x, y, z]) => [x + mid, side - y, mid - z],
+		0b111: ([x, y, z]) => [side - z, side - x, y + mid],
+		0b101: ([x, y, z]) => [side - z, mid - x, y + mid],
+		0b100: ([x, y, z]) => [side - y, z, mid - x],
+	};
+
+	const octs = [...Array(8)].map(() => []);
+	for (const vec3 of vec3s) {
+		const bitX = vec3[0] > mid;
+		const bitY = vec3[1] > mid;
+		const bitZ = vec3[2] > mid;
+		const oct = (bitX << 2) + (bitY << 1) + bitZ;
+		octs[oct].push(vec3);
+	}
+
+	const sorted = await Promise.all(
+		octs.map(async (octVec3s, oct) => await _h3CurveSort(octVec3s.map(maps[oct]), mid)),
+	);
+	return GRAY_3.flatMap((oct) => sorted[oct].map(inverseMaps[oct]));
 }
