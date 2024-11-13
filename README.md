@@ -1,4 +1,4 @@
-<!-- ### Overview
+### Overview
 
 This repository contains recursion-based implementation of Hilbert Curve Sorting algorithms for 2-tuples and 3-tuples.
 
@@ -21,19 +21,15 @@ The simplest sort one might use is the Lex Order, which compares the first non-i
 > A better ordering is $[00, 01, 11, 10]$, which is the Gray Code sequence $G_2$.
 
 ### Solution
-Mapping from $\mathbb{R}^n$ to $\mathbb{R}$
+Mapping from $\mathbb{R^n}$ to $\mathbb{R}$
 could be achieved through the inverse map of Hilbert Curves,
 which are space-filling curves whose limit is a n-hypercube.
 
-> Technically the Hilbert Curves maps the unit interval $[0, 1]$ to the unit n-hypercube $U_n$, but the hypercube could be offsetted and scaled to fit our data.
-> The inverse map, as a result, might not return the unit interval, but ordering is preserved.
+> Technically the Hilbert Curves maps the unit interval $[0, 1]$ to the unit n-hypercube $U\_n$, but the hypercube could be offsetted and scaled to fit our data.
 
 Neighboring tuples in the input space will also end up close to each other on the Hilbert Curve,
 preserving the spatial relationship between the input points.
-$\mathbb{R}^n$ with the ordering will possess a total order.
-
-> The Hilbet Curve $\mathbb{H}: \mathbb{R} \rightarrow \mathbb{R}^n$ is surjective, so its inverse mapping is multivalued.
-> The algorithms will only return one of the possible values, consistently.
+$\mathbb{R^n}$ with the ordering will possess a total order.
 
 ### Implementation
 
@@ -44,12 +40,12 @@ and that they are fractals. Details below.
 - Locality-preserving - Points on the Hilbert Curve converges to a definite point as iteration count increases.
 > This is in general not true for other curves, where the resulting points might shift vastly over iterations.
 
-- Fractalness - Every iteration $\mathbb{H}\_n$ implicitly traces (scaled) $\mathbb{H}\_{n-k}, k \le n$ curves.
+- Fractalness - Every iteration $\mathbb{H}(n)$ implicitly traces (scaled) $\mathbb{H}(n-k), k \le n$ curves.
 
->![$\mathbb{H}_1$ Overlay](assets/images/H1_overlay.jpg)
-> ![$\mathbb{H}_2$ Overlay](assets/images/H2_overlay.jpg)
-> ![$\mathbb{H}_3$ Overlay](assets/images/H3_overlay.jpg)  
-> _2d Hilbert Curves Overlay 1st-3rd Iterations ~ Fractalness_  
+>![$\mathbb{H\_}1$ Overlay](assets/images/H1_overlay.jpg)
+> ![$\mathbb{H\_2}$ Overlay](assets/images/H2_overlay.jpg)
+> ![$\mathbb{H\_3}$ Overlay](assets/images/H3_overlay.jpg)  
+> _H\_2 Overlay, First 3 Iterations ~ Fractalness_  
 > _Images by Geoff Richards (Qef) - Own work, Public Domain_
 
 ___
@@ -63,37 +59,37 @@ points in $01$ always come after the ones in $00$, the ones in $11$ always come 
 > The orientation of $n$-d Hilbert Curve is based off the Gray Code sequence $G\_n$, interpreting the bits as mentioned above, generalized.  
 > This is intuitive as the Gray Code is a permutation of the Bit Code, which contains every vertex of $U\_n$, and only one bit (axis) is flipped (shifted) between successive Gray Code bits.
 
-This allows us to divide an arbitrary number of points into quadrants and sort the quadrants instead, after which we concatenate the results in $\mathbb{H}_1$ order, recursively.
+This allows us to divide an arbitrary number of points into quadrants and sort the quadrants instead, after which we concatenate the results in $\mathbb{H\_2}(1)$ order, recursively.
+Before sorting the quadrants, they must be rotated or flipped and offsetted to fit
+$\mathbb{H\_2}(1)$, as the recursive algorithm devides the square according to it.
 
-Before sorting the quadrants, they must be rotated or flipped to scaled & offsetted $\mathbb{H}_1$, as the recursive algorithm devides the square according to it.
+The recursion base will be when there are only 1 or none vector left, or if all vectors are identical. The input vectors will be returned.
 
-The recursion base will be when there are only 1 vector or none left, or if all vectors are identical. The input vectors will be returned.
+The recursion step will offset and scale the vectors to fit a hypercube, run recursion, and return de-fitted result vectors.
 
-The recursion step will fit the vectors to a hypercube with scale $2^k$, run recursion, and return de-fitted result vectors.
+The $U\_3$ case is essentially the same.
 
 ### Demo
 I included an interactive [Demo Page](assets/demo.html) which could be downloaded directly and opened in a browser (no additional assets have to be downloaded). It contains demos of:
 
-- 2-D points sorting - connects set / random 2d points according to the sorted sequence.
+- 2-D points sorting - connects set / random 2-D points according to the sorted sequence.
 > The result from sorting random points will roughly estimate a hilbert curve.
 
 - Colors (sRGB) sorting - sorting sRGB colors, using $(R, G, B)$ as the color vector, with a pre/post-sort comparison.
 > The result would be more gradient-like (overall) than the raw version.  
-> HSL might give better results (?), you could experiment with it freely, through minor changes to the demo.html script source code.
+> HSL might give better results (?), you could experiment with it freely, through minor changes to the _assets/demo.html_ script source code.
 
 ### Notes
 
 The time complexity of the algorithms is estimated to be $O(n)$ where n is the number of vectors in the hypercube
-(complexity analysed w.r.t. number of function calls). This, however, ignores constant factors and overhead of recursion function calls.
+(complexity analysed w.r.t. number of total function calls). This, however, ignores constant factors and the overhead of recursion function calls.
 
 Space complexity of the algorithms is expected to be high, as recursion is heavily used.
 
-Overall performance should be pretty good as a toy, but since $n$ scales with $(s + 1)^n$, where $s$ is side length of hypercube and $n$ is hypercube's dimension, this might get extremely computational and memory demanding as $s$ scales.
+Overall performance should be pretty good, as a toy. But since $n$ scales with $(s + 1)^n$, where $s$ is side length of hypercube and $n$ is hypercube's dimension, this might get extremely computational and memory demanding as $s$ scales.
 
 Due to the heavy use of recursion, asynchronous operations are used to spread computational load.
 
 ### Misc
 
-Generalization to even higher dimensions is possible, but I only implemented $\mathbb{R}^2$ and $\mathbb{R}^3$ algorithms here, in JS (I know, I know, it's slow, but whatever).
-
-Non-recursive implementation in C and generalization to all dimensions could be found at [Non-recursive Hilbert Curve on GitHub](https://github.com/adishavit/hilbert/tree/master). -->
+Generalization to higher dimensions is possible but much more complicated, I only implemented the $\mathbb{H\_2}$ and $\mathbb{H\_3}$ algorithms here, in JS (I know, I know, it's slow, but whatever).
