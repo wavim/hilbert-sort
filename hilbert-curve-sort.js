@@ -15,7 +15,7 @@ export async function h2CurveSort(vec2s) {
 	const scaleX = maxSide / sideX;
 	const scaleY = maxSide / sideY;
 	const normVec2s = vec2s.map(([x, y]) => [scaleX * (x - minX), scaleY * (y - minY)]);
-	// Return de-scaled and de-scaled results from actual sort
+	// De-scaling and de-centering the results from actual sort
 	return (await _h2CurveSort(normVec2s, maxSide)).map(([x, y]) => [x / scaleX + minX, y / scaleY + minY]);
 }
 
@@ -40,7 +40,7 @@ export async function h3CurveSort(vec3s) {
 	const scaleY = maxSide / sideY;
 	const scaleZ = maxSide / sideZ;
 	const normVec3s = vec3s.map(([x, y, z]) => [scaleX * (x - minX), scaleY * (y - minY), scaleZ * (z - minZ)]);
-	// Return de-scaled and de-scaled results from actual sort
+	// De-scaling and de-centering the results from actual sort
 	return (await _h3CurveSort(normVec3s, maxSide)).map(([x, y, z]) => [
 		x / scaleX + minX,
 		y / scaleY + minY,
