@@ -11,6 +11,7 @@ export async function h2CurveSort(vec2s) {
 	const sideY = maxY - minY;
 	const maxSide = Math.max(sideX, sideY);
 
+	// Centering and scaling data to fit hypercube
 	const scaleX = maxSide / sideX;
 	const scaleY = maxSide / sideY;
 	const normVec2s = vec2s.map(([x, y]) => [scaleX * (x - minX), scaleY * (y - minY)]);
@@ -33,6 +34,7 @@ export async function h3CurveSort(vec3s) {
 	const sideZ = maxZ - minZ;
 	const maxSide = Math.max(sideX, sideY, sideZ);
 
+	// Centering and scaling data to fit hypercube
 	const scaleX = maxSide / sideX;
 	const scaleY = maxSide / sideY;
 	const scaleZ = maxSide / sideZ;
@@ -44,14 +46,18 @@ export async function h3CurveSort(vec3s) {
 	]);
 }
 
+// Gray Code defining orthants' order
 const grayCode = (n) => [...Array(2 ** n).keys()].map((bit) => bit ^ (bit >> 1));
 const GRAY_2 = grayCode(2);
 const GRAY_3 = grayCode(3);
 
 async function _h2CurveSort(vec2s, side) {
+	// Base
 	if (vec2s.length < 2 || new Set(vec2s.map(String)).size === 1) return vec2s;
 
+	// Recursion
 	const mid = side / 2;
+	// Transformation of quadrants to (from) U_2(1)
 	const maps = {
 		0b00: ([x, y]) => [y, x],
 		0b01: ([x, y]) => [x, y - mid],
@@ -69,6 +75,7 @@ async function _h2CurveSort(vec2s, side) {
 	for (const vec2 of vec2s) {
 		const bitX = vec2[0] > mid;
 		const bitY = vec2[1] > mid;
+		// Quadrant as G_2 bit
 		const quad = (bitX << 1) + bitY;
 		quads[quad].push(vec2);
 	}
@@ -76,13 +83,17 @@ async function _h2CurveSort(vec2s, side) {
 	const sorted = await Promise.all(
 		quads.map(async (quadVec2s, quad) => await _h2CurveSort(quadVec2s.map(maps[quad]), mid)),
 	);
+	// Order quadrants w.r.t G_2
 	return GRAY_2.flatMap((quad) => sorted[quad].map(inverseMaps[quad]));
 }
 
 async function _h3CurveSort(vec3s, side) {
+	// Base
 	if (vec3s.length < 2 || new Set(vec3s.map(String)).size === 1) return vec3s;
 
+	// Recursion
 	const mid = side / 2;
+	// Transformation of octants to (from) U_3(1)
 	const maps = {
 		0b000: ([x, y, z]) => [z, x, y],
 		0b001: ([x, y, z]) => [y, z - mid, x],
@@ -109,6 +120,7 @@ async function _h3CurveSort(vec3s, side) {
 		const bitX = vec3[0] > mid;
 		const bitY = vec3[1] > mid;
 		const bitZ = vec3[2] > mid;
+		// Octant as G_3 bit
 		const oct = (bitX << 2) + (bitY << 1) + bitZ;
 		octs[oct].push(vec3);
 	}
@@ -116,5 +128,6 @@ async function _h3CurveSort(vec3s, side) {
 	const sorted = await Promise.all(
 		octs.map(async (octVec3s, oct) => await _h3CurveSort(octVec3s.map(maps[oct]), mid)),
 	);
+	// Order octants w.r.t G_3
 	return GRAY_3.flatMap((oct) => sorted[oct].map(inverseMaps[oct]));
 }
