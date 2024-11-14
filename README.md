@@ -101,6 +101,6 @@ Here I only implemented the $\mathbb{H\_2}$ and $\mathbb{H\_3}$ algorithms in JS
 
 The algorithms could be used for fast approximations of the Travelling Salesman Problem.
 A test was ran on [pla85900.tsp](https://github.com/CarbonicSoda/tsp-hilbert-curve-benchmark/blob/master/pla85900.tsp) that contains 85900 nodes.
-The final distance $188465250$ (CEIL_2D) is only a rough $\times 1.32$ of the Mathematically optimal distance $142382641$ (CEIL_2D).
+The final distance 188465250 (CEIL_2D) is only a rough x1.32 of the Mathematically optimal distance 142382641 (CEIL_2D).
 That might seem quite bad, but many dedicated approximation algorithms do no better, yet this algorithm is more efficient.
 ([details](https://github.com/CarbonicSoda/tsp-hilbert-curve-benchmark))
