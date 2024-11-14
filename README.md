@@ -94,4 +94,4 @@ Due to the heavy use of recursion, asynchronous operations are used to spread co
 
 Generalization to higher dimensions is possible but much more complicated. I only implemented the $\mathbb{H\_2}$ and $\mathbb{H\_3}$ algorithms in JS (I know, I know, but, whatever).
 
-The algorithms could be used for efficient rough-estimates of the Travelling Salesman problem, though the result could deviate from the Mathematically optimal solution by a rough $*1.5$ (I know it's quite bad, so I kept in Misc as a fun toy).
+The algorithms could be used for fast approximations of the Travelling Salesman Problem. A test was ran on [pla85900.tsp](https://github.com/mastqe/tsplib/blob/master/pla85900.tsp) that contains $85900$ nodes. The final distance $188465250$ (CEIL_2D) is only a rough $\times 1.32$ of the Mathematically optimal solution $142382641$ (CEIL_2D). That might seem quite bad, but many dedicated approximation algorithms do no better.
