@@ -264,14 +264,14 @@
 				pts2dCtx.clearRect(0, 0, pts2dSide, pts2dSide);
 
 				const sorted = await h2CurveSort(pts);
-				pts2dCtx.moveTo(...sorted[0]);
+				pts2dCtx.moveTo(sorted[0][0], pts2dSide - sorted[0][1]);
 				pts2dCtx.beginPath();
 				for (let [x, y] of sorted) {
 					y = pts2dSide - y;
 					if (sorted.length <= 500) pts2dCtx.fillRect(x - 4, y - 4, 8, 8);
 					pts2dCtx.lineTo(x, y);
 				}
-				pts2dCtx.moveTo(...sorted[0]);
+				pts2dCtx.moveTo(sorted[0][0], pts2dSide - sorted[0][1]);
 				pts2dCtx.closePath();
 				pts2dCtx.stroke();
 			}
