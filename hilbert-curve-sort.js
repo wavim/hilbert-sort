@@ -80,7 +80,7 @@ async function _h2CurveSort(vec2s, side) {
 		0b10: ([x, y]) => [side - y, mid - x],
 	};
 
-	const quads = [...Array(4)].map(() => []);
+	const quads = [[], [], [], []];
 	for (const vec2 of vec2s) {
 		const bitX = vec2[0] > mid;
 		const bitY = vec2[1] > mid;
@@ -125,7 +125,7 @@ async function _h3CurveSort(vec3s, side) {
 		0b100: ([x, y, z]) => [side - y, z, mid - x],
 	};
 
-	const octs = [...Array(8)].map(() => []);
+	const octs = [[], [], [], [], [], [], [], []];
 	for (const vec3 of vec3s) {
 		const bitX = vec3[0] > mid;
 		const bitY = vec3[1] > mid;
