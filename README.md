@@ -86,12 +86,21 @@ The time complexity of the algorithms is estimated to be $O(n)$ where n is the n
 
 Space complexity of the algorithms is expected to be high, as recursion is heavily used.
 
-Overall performance should be pretty good, as a toy. But since $n$ scales with $(s + 1)^n$, where $s$ is side length of hypercube and $n$ is hypercube's dimension, this might get extremely computational and memory demanding as $s$ scales.
+Overall performance should be pretty good, as a toy. But since $n$ scales with $(s + 1)^n$, where $s$ is side length of hypercube and $n$ is hypercube's dimension.
+This might get extremely computational and memory demanding as $s$ scales.
+
+> Here the complexities are estimated assuming uniform distribution of points in the hypercube (spacing 1),
+> so performance shall not be a problem in most cases.
 
 Due to the heavy use of recursion, asynchronous operations are used to spread computational load.
 
 ### Misc
 
-Generalization to higher dimensions is possible but much more complicated. I only implemented the $\mathbb{H\_2}$ and $\mathbb{H\_3}$ algorithms in JS (I know, I know, but, whatever).
+Generalization to higher dimensions is possible but much more complicated.
+Here I only implemented the $\mathbb{H\_2}$ and $\mathbb{H\_3}$ algorithms in JS (I know, I know, but, whatever).
 
-The algorithms could be used for fast approximations of the Travelling Salesman Problem. A test was ran on [pla85900.tsp](https://github.com/CarbonicSoda/tsp-hilbert-curve-benchmark/blob/master/pla85900.tsp) that contains 85900 nodes. The final distance $188465250$ (CEIL_2D) is only a rough $\times 1.32$ of the Mathematically optimal distance $142382641$ (CEIL_2D). That might seem quite bad, but many dedicated approximation algorithms do no better. ([details](https://github.com/CarbonicSoda/tsp-hilbert-curve-benchmark))
+The algorithms could be used for fast approximations of the Travelling Salesman Problem.
+A test was ran on [pla85900.tsp](https://github.com/CarbonicSoda/tsp-hilbert-curve-benchmark/blob/master/pla85900.tsp) that contains 85900 nodes.
+The final distance $188465250$ (CEIL_2D) is only a rough $\times 1.32$ of the Mathematically optimal distance $142382641$ (CEIL_2D).
+That might seem quite bad, but many dedicated approximation algorithms do no better.
+([details](https://github.com/CarbonicSoda/tsp-hilbert-curve-benchmark))
