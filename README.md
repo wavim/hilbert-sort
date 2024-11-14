@@ -94,4 +94,4 @@ Due to the heavy use of recursion, asynchronous operations are used to spread co
 
 Generalization to higher dimensions is possible but much more complicated. I only implemented the $\mathbb{H\_2}$ and $\mathbb{H\_3}$ algorithms in JS (I know, I know, but, whatever).
 
-The algorithms could be used as an efficient estimate of the Travelling Salesman problem.
+The algorithms could be used as an efficient estimates of the Travelling Salesman problem, though the result could deviate from the Mathematically optimal solution by a rough $*1.5$ (I know it's quite bad, so I kept in Misc as a fun toy).
