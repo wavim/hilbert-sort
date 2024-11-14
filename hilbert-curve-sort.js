@@ -56,7 +56,7 @@ export async function h3CurveSort(vec3s) {
 }
 
 // Gray Code defining orthants' order
-const grayCode = (n) => [...Array(2 << n).keys()].map((bit) => bit ^ (bit >> 1));
+const grayCode = (n) => [...Array(1 << n).keys()].map((bit) => bit ^ (bit >> 1));
 const GRAY_2 = grayCode(2);
 const GRAY_3 = grayCode(3);
 
