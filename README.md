@@ -73,7 +73,7 @@ The $U\_3$ case is essentially the same.
 
 ### Demo
 
-I included an interactive [Demo Page](assets/demo.html) which could be downloaded directly and opened in a browser (no additional assets have to be downloaded). It contains demos of:
+An interactive demo [GitHub Page](https://carbonicsoda.github.io/hilbert-curve-sort/). It contains demos of:
 
 -   2-D points sorting - connects set / random 2-D points according to the sorted sequence.
 
