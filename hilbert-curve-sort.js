@@ -1,5 +1,6 @@
 export async function h2CurveSort(vec2s) {
-	let [minX, minY] = ([maxX, maxY] = vec2s[0]);
+	let [minX, minY] = vec2s[0];
+	let [maxX, maxY] = vec2s[0];
 	for (let i = 1; i < vec2s.length; i++) {
 		const [x, y] = vec2s[i];
 		if (x < minX) minX = x;
@@ -23,7 +24,8 @@ export async function h2CurveSort(vec2s) {
 }
 
 export async function h3CurveSort(vec3s) {
-	let [minX, minY, minZ] = ([maxX, maxY, maxZ] = vec3s[0]);
+	let [minX, minY, minZ] = vec3s[0];
+	let [maxX, maxY, maxZ] = vec3s[0];
 	for (let i = 1; i < vec3s.length; i++) {
 		const [x, y, z] = vec3s[i];
 		if (x < minX) minX = x;
