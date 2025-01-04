@@ -21,6 +21,7 @@ The simplest sort one might use is the Lex Order, which compares the first non-i
 > A better ordering is $[00, 01, 11, 10]$, which is the Gray Code sequence $G_2$.
 
 ### Solution
+
 Mapping from $\mathbb{R^n}$ to $\mathbb{R}$
 could be achieved through the inverse map of Hilbert Curves,
 which are space-filling curves whose limit is a n-hypercube.
@@ -33,22 +34,21 @@ $\mathbb{R^n}$ with the ordering will possess a total order.
 
 ### Implementation
 
-Some key properties of the Hilbert Curves that allows us to implement a recursive algorithm is, 
+Some key properties of the Hilbert Curves that allows us to implement a recursive algorithm is,
 that they are locality-preserving space-filling curves,
 and that they are fractals. Details below.
 
-- Locality-preserving - Points on the Hilbert Curve converges to a definite point as iteration count increases.
-> This is in general not true for other curves, where the resulting points might shift vastly over iterations.
+-   Locality-preserving - Points on the Hilbert Curve converges to a definite point as iteration count increases.
 
-- Fractalness - Every iteration $\mathbb{H}(n)$ implicitly traces (scaled) $\mathbb{H}(n-k), k \le n$ curves.
+    > This is in general not true for other curves, where the resulting points might shift vastly over iterations.
 
->![$\mathbb{H\_}1$ Overlay](assets/images/H1_overlay.jpg)
-> ![$\mathbb{H\_2}$ Overlay](assets/images/H2_overlay.jpg)
-> ![$\mathbb{H\_3}$ Overlay](assets/images/H3_overlay.jpg)  
-> _H\_2 Overlay, First 3 Iterations ~ Fractalness_  
+-   Fractalness - Every iteration $\mathbb{H}(n)$ implicitly traces (scaled) $\mathbb{H}(n-k), k \le n$ curves.
+
+> ![$\mathbb{H_}1$ Overlay](assets/H1_overlay.jpg) > ![$\mathbb{H_2}$ Overlay](assets/H2_overlay.jpg) > ![$\mathbb{H_3}$ Overlay](assets/H3_overlay.jpg)  
+> _H_2 Overlay, First 3 Iterations ~ Fractalness_  
 > _Images by Geoff Richards (Qef) - Own work, Public Domain_
 
-___
+---
 
 Now, take the $U\_2$ case as an example for simplicity of illustration.
 
@@ -70,14 +70,16 @@ The recursion step will offset and scale the vectors to fit a hypercube, run rec
 The $U\_3$ case is essentially the same.
 
 ### Demo
+
 I included an interactive [Demo Page](assets/demo.html) which could be downloaded directly and opened in a browser (no additional assets have to be downloaded). It contains demos of:
 
-- 2-D points sorting - connects set / random 2-D points according to the sorted sequence.
-> The result from sorting random points will roughly estimate a hilbert curve.
+-   2-D points sorting - connects set / random 2-D points according to the sorted sequence.
 
-- Colors (sRGB) sorting - sorting sRGB colors, using $(R, G, B)$ as the color vector, with a pre/post-sort comparison.
-> The result would be more gradient-like (overall) than the raw version.  
-> HSL might give better results (?), you could experiment with it freely, through minor changes to the _assets/demo.html_ script source code.
+    > The result from sorting random points will roughly estimate a hilbert curve.
+
+-   Colors (sRGB) sorting - sorting sRGB colors, using $(R, G, B)$ as the color vector, with a pre/post-sort comparison.
+    > The result would be more gradient-like (overall) than the raw version.  
+    > HSL might give better results (?), you could experiment with it freely, through minor changes to the _assets/demo.html_ script source code.
 
 ### Notes
 
