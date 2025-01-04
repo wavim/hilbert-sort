@@ -214,7 +214,7 @@
 			clrsSet.addEventListener("click", () => drawSetClrs());
 
 			function rdmClrs(n) {
-				return (clrs = [...Array(n)].map(() => [rand(0, 255), rand(0, 255), rand(0, 255)]));
+				return [...Array(n)].map(() => [rand(0, 255), rand(0, 255), rand(0, 255)]);
 			}
 			clrsRdm.addEventListener("click", () => {
 				let n = Number(clrsRdmN.value);
