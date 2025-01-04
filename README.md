@@ -44,7 +44,9 @@ and that they are fractals. Details below.
 
 -   Fractalness - Every iteration $\mathbb{H}(n)$ implicitly traces (scaled) $\mathbb{H}(n-k), k \le n$ curves.
 
-> ![$\mathbb{H_}1$ Overlay](assets/H1_overlay.jpg) > ![$\mathbb{H_2}$ Overlay](assets/H2_overlay.jpg) > ![$\mathbb{H_3}$ Overlay](assets/H3_overlay.jpg)  
+> ![$\mathbb{H_}1$ Overlay](assets/H1_overlay.jpg)
+> ![$\mathbb{H_2}$ Overlay](assets/H2_overlay.jpg)
+> ![$\mathbb{H_3}$ Overlay](assets/H3_overlay.jpg)  
 > _H_2 Overlay, First 3 Iterations ~ Fractalness_  
 > _Images by Geoff Richards (Qef) - Own work, Public Domain_
 
