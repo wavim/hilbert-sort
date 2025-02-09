@@ -3,10 +3,8 @@
 
 #include "hilbert_curve_sort.h"
 
-void RunHilbertCurveSort2D(vector<array<double, 2>> &vec2s, const double kSide,
-                           promise<void> resolve);
-void RunHilbertCurveSort3D(vector<array<double, 3>> &vec3s, const double kSide,
-                           promise<void> resolve);
+void RunHilbertCurveSort2D(vector<array<double, 2>> &vec2s, const double kSide);
+void RunHilbertCurveSort3D(vector<array<double, 3>> &vec3s, const double kSide);
 bool IsBaseHilbertCurveSort2D(const vector<array<double, 2>> &kVec2s);
 bool IsBaseHilbertCurveSort3D(const vector<array<double, 3>> &kVec3s);
 
@@ -43,13 +41,7 @@ void HilbertCurveSort2D(vector<array<double, 2>> &vec2s) {
     kVec2[1] = kScaleY * (kVec2[1] - minY);
   }
 
-  promise<void> promise;
-  future<void> future = promise.get_future();
-  thread thread(RunHilbertCurveSort2D, ref(vec2s), kMaxSide,
-                std::move(promise));
-
-  future.wait();
-  thread.join();
+  RunHilbertCurveSort2D(ref(vec2s), kMaxSide);
 };
 
 void HilbertCurveSort3D(vector<array<double, 3>> &vec3s) {
@@ -84,18 +76,12 @@ void HilbertCurveSort3D(vector<array<double, 3>> &vec3s) {
     kVec3[2] = kScaleZ * (kVec3[2] - minZ);
   }
 
-  promise<void> promise;
-  future<void> future = promise.get_future();
-  thread thread(RunHilbertCurveSort3D, ref(vec3s), kMaxSide,
-                std::move(promise));
-
-  future.wait();
-  thread.join();
+  RunHilbertCurveSort3D(ref(vec3s), kMaxSide);
 };
 
-void RunHilbertCurveSort2D(vector<array<double, 2>> &vec2s, const double kSide,
-                           promise<void> resolve) {
-  if (IsBaseHilbertCurveSort2D(vec2s)) return resolve.set_value();
+void RunHilbertCurveSort2D(vector<array<double, 2>> &vec2s,
+                           const double kSide) {
+  if (IsBaseHilbertCurveSort2D(vec2s)) return;
 
   const double kMid = kSide / 2;
 
@@ -140,19 +126,7 @@ void RunHilbertCurveSort2D(vector<array<double, 2>> &vec2s, const double kSide,
     quads[kQuad].push_back(maps[kQuad](std::move(kVec2)));
   }
 
-  vector<promise<void>> promises;
-  vector<future<void>> futures;
-  vector<thread> threads;
-
-  for (auto &kVec2s : quads) {
-    promises.emplace_back();
-    futures.push_back(promises.back().get_future());
-    threads.emplace_back(RunHilbertCurveSort2D, ref(kVec2s), kMid,
-                         std::move(promises.back()));
-  }
-
-  for (auto &future : futures) future.wait();
-  for (auto &thread : threads) thread.join();
+  for (auto &kVec2s : quads) RunHilbertCurveSort2D(ref(kVec2s), kMid);
 
   for (uint8_t i = 0; i < 4; i++) {
     for (auto &vec2 : quads[i]) vec2 = invMaps[i](std::move(vec2));
@@ -166,12 +140,11 @@ void RunHilbertCurveSort2D(vector<array<double, 2>> &vec2s, const double kSide,
   }
 
   vec2s = result;
-  resolve.set_value();
 }
 
-void RunHilbertCurveSort3D(vector<array<double, 3>> &vec3s, const double kSide,
-                           promise<void> resolve) {
-  if (IsBaseHilbertCurveSort3D(vec3s)) return resolve.set_value();
+void RunHilbertCurveSort3D(vector<array<double, 3>> &vec3s,
+                           const double kSide) {
+  if (IsBaseHilbertCurveSort3D(vec3s)) return;
 
   const double kMid = kSide / 2;
 
@@ -245,19 +218,7 @@ void RunHilbertCurveSort3D(vector<array<double, 3>> &vec3s, const double kSide,
     octs[kOct].push_back(maps[kOct](std::move(kVec3)));
   }
 
-  vector<promise<void>> promises;
-  vector<future<void>> futures;
-  vector<thread> threads;
-
-  for (auto &kVec3s : octs) {
-    promises.emplace_back();
-    futures.push_back(promises.back().get_future());
-    threads.emplace_back(RunHilbertCurveSort3D, ref(kVec3s), kMid,
-                         std::move(promises.back()));
-  }
-
-  for (auto &future : futures) future.wait();
-  for (auto &thread : threads) thread.join();
+  for (auto &kVec3s : octs) RunHilbertCurveSort3D(ref(kVec3s), kMid);
 
   for (uint8_t i = 0; i < 8; i++) {
     for (auto &vec3 : octs[i]) vec3 = invMaps[i](std::move(vec3));
@@ -271,7 +232,6 @@ void RunHilbertCurveSort3D(vector<array<double, 3>> &vec3s, const double kSide,
   }
 
   vec3s = result;
-  resolve.set_value();
 }
 
 bool IsBaseHilbertCurveSort2D(const vector<array<double, 2>> &kVec2s) {

@@ -96,8 +96,6 @@ This might get extremely computational and memory demanding as $s$ scales.
 > Here the complexities are estimated assuming uniform distribution of points in the hypercube (spacing 1),
 > so performance shall not be a problem in most cases.
 
-Due to the heavy use of recursion, asynchronous operations are used to spread computational load.
-
 ### Misc
 
 Generalization to higher dimensions is possible but much more complicated.

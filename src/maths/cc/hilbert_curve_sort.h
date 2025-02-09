@@ -6,12 +6,10 @@
 
 #include <array>
 #include <functional>
-#include <future>
 #include <iterator>
 #include <limits>
 #include <map>
 #include <set>
-#include <thread>
 #include <utility>
 #include <vector>
 
