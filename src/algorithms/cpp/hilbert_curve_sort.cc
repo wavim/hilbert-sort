@@ -201,7 +201,7 @@ void RunHilbertCurveSort3D(vector<array<double, 3>> &vec3s,
     vec3 = {kSide - vec3[2], kSide - vec3[0], vec3[1] + kMid};
   };
   invMaps[0b101] = [kSide, kMid](array<double, 3> &vec3) {
-    vec3 = {kSide - vec3[2], kMid - vec3[0], vec3[1]};
+    vec3 = {kSide - vec3[2], kMid - vec3[0], vec3[1] + kMid};
   };
   invMaps[0b100] = [kSide, kMid](array<double, 3> &vec3) {
     vec3 = {kSide - vec3[1], vec3[2], kMid - vec3[0]};
