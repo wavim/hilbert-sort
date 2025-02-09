@@ -9,7 +9,7 @@ It is heavily used for DB indexing, visualization and a myriad of other purposes
 
 > The distance may be measured in Hamming Distance for bits, or Euclidean 2-norm for vectors.
 
-Sometimes our data is multi-dimensional,
+Sometimes our data is multidimensional,
 like sRGB colors { $(r, g, b)|r, g, b \in [0, 255]$ },
 or vectors in $\mathbb{R}^n, n \gt 1$ in general.
 Unlike the real numbers $\mathbb{R}$,
@@ -24,7 +24,7 @@ The simplest sort one might use is the Lex Order, which compares the first non-i
 
 Mapping from $\mathbb{R^n}$ to $\mathbb{R}$
 could be achieved through the inverse map of Hilbert Curves,
-which are space-filling curves whose limit is a n-hypercube.
+which are space-filling curves whose limit is an n-hypercube.
 
 > Technically the Hilbert Curves maps the unit interval $[0, 1]$ to the unit n-hypercube $U\_n$, but the hypercube could be offsetted and scaled to fit our data.
 
@@ -63,7 +63,7 @@ points in $01$ always come after the ones in $00$, the ones in $11$ always come 
 
 This allows us to divide an arbitrary number of points into quadrants and sort the quadrants instead, after which we concatenate the results in $\mathbb{H\_2}(1)$ order, recursively.
 Before sorting the quadrants, they must be rotated or flipped and offsetted to fit
-$\mathbb{H\_2}(1)$, as the recursive algorithm devides the square according to it.
+$\mathbb{H\_2}(1)$, as the recursive algorithm divides the square according to it.
 
 The recursion base will be when there are only 1 or none vector left, or if all vectors are identical. The input vectors will be returned.
 
@@ -77,16 +77,16 @@ An interactive demo [GitHub Page](https://carbonicsoda.github.io/hilbert-curve-s
 
 -   2-D points sorting - connects set / random 2-D points according to the sorted sequence.
 
-    > The result from sorting random points will roughly estimate a hilbert curve.
+    > The result from sorting random points will roughly estimate a Hilbert curve.
 
--   Colors (sRGB) sorting - sorting sRGB colors, using $(R, G, B)$ as the color vector, with a pre/post-sort comparison.
+-   Colors (sRGB) sorting - sorting sRGB colors, using $(R, G, B)$ as the color vector, with a pre- / post-sort comparison.
     > The result would be more gradient-like (overall) than the raw version.  
     > HSL might give better results (?), you could experiment with it freely, through minor changes to the _assets/demo.html_ script source code.
 
 ### Notes
 
 The time complexity of the algorithms is estimated to be $O(n)$ where n is the number of vectors in the hypercube
-(complexity analysed w.r.t. number of total function calls). This, however, ignores constant factors and the overhead of recursion function calls.
+(complexity analyzed w.r.t. number of total function calls). This, however, ignores constant factors and the overhead of recursion function calls.
 
 Space complexity of the algorithms is expected to be high, as recursion is heavily used.
 
@@ -101,10 +101,10 @@ Due to the heavy use of recursion, asynchronous operations are used to spread co
 ### Misc
 
 Generalization to higher dimensions is possible but much more complicated.
-Here I only implemented the $\mathbb{H\_2}$ and $\mathbb{H\_3}$ algorithms in JS (I know, I know, but, whatever).
+Here I only implemented the $\mathbb{H\_2}$ and $\mathbb{H\_3}$ algorithms in JS and C++.
 
 The algorithms could be used for fast approximations of the Travelling Salesman Problem.
-A test was ran on [pla85900.tsp](https://github.com/CarbonicSoda/tsp-hilbert-curve-benchmark/blob/master/pla85900.tsp) that contains 85900 nodes.
+A test was run on [pla85900.tsp](https://github.com/CarbonicSoda/tsp-hilbert-curve-benchmark/blob/master/pla85900.tsp) that contains 85900 nodes.
 The final distance 188465250 (CEIL_2D) is only a rough x1.32 of the Mathematically optimal distance 142382641 (CEIL_2D).
 That might seem quite bad, but many dedicated approximation algorithms do no better, yet this algorithm is more efficient.
 ([details](https://github.com/CarbonicSoda/tsp-hilbert-curve-benchmark))

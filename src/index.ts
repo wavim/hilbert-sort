@@ -1,4 +1,4 @@
-import { h2CurveSort, h3CurveSort, VEC2, VEC3 } from "./maths/hilbert-curve-sort.js";
+import { h2CurveSort, h3CurveSort, VEC2, VEC3 } from "./maths/ts/hilbert-curve-sort.js";
 
 const rand = (a: number, b: number) => Math.random() * (b - a) + a;
 
