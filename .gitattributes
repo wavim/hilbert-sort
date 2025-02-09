@@ -1,1 +1,3 @@
-*.html linguist-detectable=false
+**/index.html linguist-documentation=true
+**/index.ts linguist-documentation=true
+**/index.css linguist-documentation=true
