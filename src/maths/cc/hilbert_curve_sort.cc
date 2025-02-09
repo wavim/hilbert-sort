@@ -1,4 +1,5 @@
 // hilbert_curve_sort.cc
+// refer to ..\ts\hilbert-curve-sort.ts for documentation
 
 #include "hilbert_curve_sort.h"
 
