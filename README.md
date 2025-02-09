@@ -1,6 +1,6 @@
 ### Overview
 
-This repository contains recursion-based implementation of Hilbert Curve Sorting algorithms for 2-tuples and 3-tuples.
+This repository contains recursion-based implementation of Hilbert Curve Sorting algorithms for 2-tuples and 3-tuples, in C++ and TS.
 
 ### Motive
 
@@ -99,7 +99,7 @@ This might get extremely computational and memory demanding as $s$ scales.
 ### Misc
 
 Generalization to higher dimensions is possible but much more complicated.
-Here I only implemented the $\mathbb{H\_2}$ and $\mathbb{H\_3}$ algorithms in JS and C++.
+Here I only implemented the $\mathbb{H\_2}$ and $\mathbb{H\_3}$ algorithms in C++ and TS.
 
 The algorithms could be used for fast approximations of the Travelling Salesman Problem.
 A test was run on [pla85900.tsp](https://github.com/CarbonicSoda/tsp-hilbert-curve-benchmark/blob/master/pla85900.tsp) that contains 85900 nodes.
