@@ -2,46 +2,36 @@ export type VEC2 = [number, number];
 export type VEC3 = [number, number, number];
 
 // Gray Code defining orthants' order
-const grayCode = (n: number) => [...Array(1 << n).keys()].map((bit) => bit ^ (bit >> 1));
-const GRAY_2 = grayCode(2);
-const GRAY_3 = grayCode(3);
+const GRAY_CODE = (n: number) => [...Array(1 << n).keys()].map((bit) => bit ^ (bit >> 1));
+const GRAY_2 = GRAY_CODE(2);
+const GRAY_3 = GRAY_CODE(3);
 
-export async function h2CurveSort(vec2s: VEC2[]): Promise<VEC2[]> {
-	let [minX, minY] = vec2s[0];
-	let [maxX, maxY] = vec2s[0];
-	for (let i = 1; i < vec2s.length; i++) {
-		const [x, y] = vec2s[i];
-		if (x < minX) minX = x;
-		else if (x > maxX) maxX = x;
-		if (y < minY) minY = y;
-		else if (y > maxY) maxY = y;
+export function hilbertCurveSort2D(vec2s: VEC2[]): VEC2[] {
+	let [minX, minY] = [Infinity, Infinity];
+	let [maxX, maxY] = [-Infinity, -Infinity];
+	for (const [x, y] of vec2s) {
+		[minX, minY] = [Math.min(x, minX), Math.min(y, minY)];
+		[maxX, maxY] = [Math.max(x, maxX), Math.max(y, maxY)];
 	}
 	const sideX = maxX - minX;
 	const sideY = maxY - minY;
 	const maxSide = Math.max(sideX, sideY);
 
 	// Centering and scaling data to fit hypercube
-	let scaleX = maxSide / sideX;
-	let scaleY = maxSide / sideY;
-	if (scaleX === 0 || !Number.isFinite(scaleX)) scaleX = 1;
-	if (scaleY === 0 || !Number.isFinite(scaleY)) scaleY = 1;
-	const normVec2s = <VEC2[]>vec2s.map(([x, y]) => [scaleX * (x - minX), scaleY * (y - minY)]);
+	const scaleX = maxSide === 0 || sideX === 0 ? 1 : maxSide / sideX;
+	const scaleY = maxSide === 0 || sideY === 0 ? 1 : maxSide / sideY;
+	const fitVec2s = <VEC2[]>vec2s.map(([x, y]) => [scaleX * (x - minX), scaleY * (y - minY)]);
 
 	// De-scaling and de-centering the results from actual sort
-	return (await _h2CurveSort(normVec2s, maxSide)).map(([x, y]) => [x / scaleX + minX, y / scaleY + minY]);
+	return runHilbertCurveSort2D(fitVec2s, maxSide).map(([x, y]) => [x / scaleX + minX, y / scaleY + minY]);
 }
 
-export async function h3CurveSort(vec3s: VEC3[]): Promise<VEC3[]> {
-	let [minX, minY, minZ] = vec3s[0];
-	let [maxX, maxY, maxZ] = vec3s[0];
-	for (let i = 1; i < vec3s.length; i++) {
-		const [x, y, z] = vec3s[i];
-		if (x < minX) minX = x;
-		else if (x > maxX) maxX = x;
-		if (y < minY) minY = y;
-		else if (y > maxY) maxY = y;
-		if (z < minZ) minZ = z;
-		else if (z > maxZ) maxZ = z;
+export function hilbertCurveSort3D(vec3s: VEC3[]): VEC3[] {
+	let [minX, minY, minZ] = [Infinity, Infinity, Infinity];
+	let [maxX, maxY, maxZ] = [-Infinity, -Infinity, -Infinity];
+	for (const [x, y, z] of vec3s) {
+		[minX, minY, minZ] = [Math.min(x, minX), Math.min(y, minY), Math.min(z, minZ)];
+		[maxX, maxY, maxZ] = [Math.max(x, maxX), Math.max(y, maxY), Math.max(z, maxZ)];
 	}
 	const sideX = maxX - minX;
 	const sideY = maxY - minY;
@@ -49,23 +39,22 @@ export async function h3CurveSort(vec3s: VEC3[]): Promise<VEC3[]> {
 	const maxSide = Math.max(sideX, sideY, sideZ);
 
 	// Centering and scaling data to fit hypercube
-	let scaleX = maxSide / sideX;
-	let scaleY = maxSide / sideY;
-	let scaleZ = maxSide / sideZ;
-	if (scaleX === 0 || !Number.isFinite(scaleX)) scaleX = 1;
-	if (scaleY === 0 || !Number.isFinite(scaleY)) scaleY = 1;
-	if (scaleZ === 0 || !Number.isFinite(scaleZ)) scaleZ = 1;
-	const normVec3s = <VEC3[]>vec3s.map(([x, y, z]) => [scaleX * (x - minX), scaleY * (y - minY), scaleZ * (z - minZ)]);
+	const scaleX = maxSide === 0 || sideX === 0 ? 1 : maxSide / sideX;
+	const scaleY = maxSide === 0 || sideY === 0 ? 1 : maxSide / sideY;
+	const scaleZ = maxSide === 0 || sideZ === 0 ? 1 : maxSide / sideZ;
+	const fitVec3s = <VEC3[]>(
+		vec3s.map(([x, y, z]) => [scaleX * (x - minX), scaleY * (y - minY), scaleZ * (z - minZ)])
+	);
 
 	// De-scaling and de-centering the results from actual sort
-	return (await _h3CurveSort(normVec3s, maxSide)).map(([x, y, z]) => [
+	return runHilbertCurveSort3D(fitVec3s, maxSide).map(([x, y, z]) => [
 		x / scaleX + minX,
 		y / scaleY + minY,
 		z / scaleZ + minZ,
 	]);
 }
 
-async function _h2CurveSort(vec2s: VEC2[], side: number): Promise<VEC2[]> {
+function runHilbertCurveSort2D(vec2s: VEC2[], side: number): VEC2[] {
 	// Base
 	if (vec2s.length < 2 || new Set(vec2s.map(String)).size === 1) return vec2s;
 
@@ -95,14 +84,14 @@ async function _h2CurveSort(vec2s: VEC2[], side: number): Promise<VEC2[]> {
 	}
 
 	// Transform quadrants to U_2(1)
-	const sorted = await Promise.all(
-		quads.map(async (quadVec2s, quad) => await _h2CurveSort(quadVec2s.map(maps[<keyof typeof maps>quad]), mid)),
+	const sorted = quads.map((quadVec2s, quad) =>
+		runHilbertCurveSort2D(quadVec2s.map(maps[<keyof typeof maps>quad]), mid),
 	);
 	// Order quadrants w.r.t G_2 and de-transform
 	return GRAY_2.flatMap((quad) => sorted[quad].map(inverseMaps[<keyof typeof inverseMaps>quad]));
 }
 
-async function _h3CurveSort(vec3s: VEC3[], side: number): Promise<VEC3[]> {
+function runHilbertCurveSort3D(vec3s: VEC3[], side: number): VEC3[] {
 	// Base
 	if (vec3s.length < 2 || new Set(vec3s.map(String)).size === 1) return vec3s;
 
@@ -141,8 +130,8 @@ async function _h3CurveSort(vec3s: VEC3[], side: number): Promise<VEC3[]> {
 	}
 
 	// Transform octants to U_3(1)
-	const sorted = await Promise.all(
-		octs.map(async (octVec3s, oct) => await _h3CurveSort(octVec3s.map(maps[<keyof typeof maps>oct]), mid)),
+	const sorted = octs.map((octVec3s, oct) =>
+		runHilbertCurveSort3D(octVec3s.map(maps[<keyof typeof maps>oct]), mid),
 	);
 	// Order octants w.r.t G_3 and de-transform
 	return GRAY_3.flatMap((oct) => sorted[oct].map(inverseMaps[<keyof typeof inverseMaps>oct]));

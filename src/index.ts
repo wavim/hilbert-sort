@@ -1,4 +1,4 @@
-import { h2CurveSort, h3CurveSort, VEC2, VEC3 } from "./maths/ts/hilbert-curve-sort.js";
+import { hilbertCurveSort2D, hilbertCurveSort3D, VEC2, VEC3 } from "./maths/ts/hilbert-curve-sort.js";
 
 const rand = (a: number, b: number) => Math.random() * (b - a) + a;
 
@@ -17,10 +17,10 @@ const pts2dSide = pageWidth * 0.45;
 pts2dCvs.setAttribute("width", String(pts2dSide));
 pts2dCvs.setAttribute("height", String(pts2dSide));
 
-async function draw2dPts(pts: VEC2[]): Promise<void> {
+function draw2dPts(pts: VEC2[]): void {
 	pts2dCtx.clearRect(0, 0, pts2dSide, pts2dSide);
 
-	const sorted = await h2CurveSort(pts);
+	const sorted = hilbertCurveSort2D(pts);
 	pts2dCtx.beginPath();
 	for (let [x, y] of sorted) {
 		y = pts2dSide - y;
@@ -82,7 +82,7 @@ clrsOriginalCvs.setAttribute("height", String(clrsCvsHeight));
 clrsSortedCvs.setAttribute("width", String(clrsCvsWidth));
 clrsSortedCvs.setAttribute("height", String(clrsCvsHeight));
 
-async function drawClrs(clrs: VEC3[]): Promise<void> {
+function drawClrs(clrs: VEC3[]): void {
 	clrsOriginalCtx.clearRect(0, 0, clrsCvsWidth, clrsCvsHeight);
 	clrsSortedCtx.clearRect(0, 0, clrsCvsWidth, clrsCvsHeight);
 	const clrWidth = clrsCvsWidth / clrs.length;
@@ -93,7 +93,7 @@ async function drawClrs(clrs: VEC3[]): Promise<void> {
 		clrsOriginalCtx.fillRect(i * clrWidth, 0, clrWidth + 1, clrsCvsHeight);
 	}
 
-	const sorted = await h3CurveSort(clrs);
+	const sorted = hilbertCurveSort3D(clrs);
 	for (let i = 0; i < sorted.length; i++) {
 		const [r, g, b] = sorted[i];
 		clrsSortedCtx.fillStyle = `rgb(${r} ${g} ${b})`;
