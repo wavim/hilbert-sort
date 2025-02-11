@@ -12,15 +12,15 @@ void RunHilbertCurveSort3D(std::vector<std::array<double, 3>> &vec3s,
 bool IsBaseHilbertCurveSort2D(const std::vector<std::array<double, 2>> &kVec2s);
 bool IsBaseHilbertCurveSort3D(const std::vector<std::array<double, 3>> &kVec3s);
 
-const auto kGrayCode = [](const int n) {
-  std::vector<char> result;
-  for (char bit = 0; bit < (1 << n); bit++) {
+const auto kGrayCode = [](const uint8_t n) {
+  std::vector<uint8_t> result;
+  for (uint8_t bit = 0; bit < (1 << n); bit++) {
     result.push_back(bit ^ (bit >> 1));
   }
   return result;
 };
-const std::vector<char> kGrayCode2 = kGrayCode(2);
-const std::vector<char> kGrayCode3 = kGrayCode(3);
+const std::vector<uint8_t> kGrayCode2 = kGrayCode(2);
+const std::vector<uint8_t> kGrayCode3 = kGrayCode(3);
 
 void HilbertCurveSort2D(std::vector<std::array<double, 2>> &vec2s) {
   double minX = std::numeric_limits<double>::max();

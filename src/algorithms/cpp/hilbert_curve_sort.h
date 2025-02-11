@@ -5,6 +5,7 @@
 #define HILBERT_CURVE_SORT
 
 #include <array>
+#include <cstdint>
 #include <functional>
 #include <iterator>
 #include <limits>
