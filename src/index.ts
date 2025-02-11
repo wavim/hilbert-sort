@@ -40,18 +40,15 @@ function drawSetPts(ptsInput?: string): void {
 		drawSetPts(<string>pts2dTextArea.getAttribute("placeholder"));
 		return;
 	}
-	let [minX, minY] = pts[0];
-	let [maxX, maxY] = pts[0];
+	let [minX, minY] = [Infinity, Infinity];
+	let [maxX, maxY] = [-Infinity, -Infinity];
 	for (const [x, y] of pts) {
-		if (x < minX) minX = x;
-		else if (x > maxX) maxX = x;
-		if (y < minY) minY = y;
-		else if (y > maxY) maxY = y;
+		[minX, minY] = [Math.min(x, minX), Math.min(y, minY)];
+		[maxX, maxY] = [Math.max(x, maxX), Math.max(y, maxY)];
 	}
-	let scaleX = (pts2dSide - 40) / (maxX - minX);
-	let scaleY = (pts2dSide - 40) / (maxY - minY);
-	if (scaleX === 0 || !Number.isFinite(scaleX)) scaleX = 1;
-	if (scaleY === 0 || !Number.isFinite(scaleY)) scaleY = 1;
+	const scaleX = pts2dSide === 40 || maxX === minX ? 1 : (pts2dSide - 40) / (maxX - minX);
+	const scaleY = pts2dSide === 40 || maxY === minY ? 1 : (pts2dSide - 40) / (maxY - minY);
+
 	draw2dPts(pts.map(([x, y]) => [scaleX * (x - minX) + 20, scaleY * (y - minY) + 20]));
 }
 pts2dSet.addEventListener("click", () => drawSetPts());
@@ -62,7 +59,9 @@ pts2dRdm.addEventListener("click", () => {
 	draw2dPts(pts);
 });
 
-pts2dTextArea.setAttribute("placeholder", "0 0\n0 1\n1 0\n1 1");
+const order = 3;
+const bits = [...Array(1 << order).keys()];
+pts2dTextArea.setAttribute("placeholder", bits.flatMap((x) => bits.map((y) => `${x} ${y}`)).join("\n"));
 drawSetPts();
 
 // Colors (sRGB) Section
@@ -125,7 +124,7 @@ clrsRdm.addEventListener("click", () => {
 });
 
 const step = 50;
-const bits = [...Array(Math.trunc(255 / step) + 1).keys()].map((b) => step * b);
-const rgbUniform = bits.flatMap((r) => bits.flatMap((g) => bits.map((b) => [r, g, b])));
+const clrBits = [...Array(Math.trunc(255 / step) + 1).keys()].map((b) => step * b);
+const rgbUniform = clrBits.flatMap((r) => clrBits.flatMap((g) => clrBits.map((b) => [r, g, b])));
 clrsTextArea.setAttribute("placeholder", rgbUniform.map((rgb) => rgb.join(" ")).join("\n"));
 drawSetClrs();
