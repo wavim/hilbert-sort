@@ -98,7 +98,10 @@ The time complexity of the algorithms is estimated to be $O(n)$ where n is the n
 Space complexity of the algorithms is expected to be high, as recursion is heavily used.
 
 Overall performance should be pretty good, as a toy. But since $n$ scales with $(s + 1)^n$, where $s$ is side length of hypercube and $n$ is hypercube's dimension.
-This might get extremely computational and memory demanding as $s$ scales.
+This might get extremely computational and memory demanding as $s$ scales.  
+(Adopt Skilling's algorithm for practical or general usages,
+which only involves cheap bit-wise operations
+and can also work in N-dimensions)
 
 > Here the complexities are estimated assuming uniform distribution of points in the hypercube (spacing 1),
 > so performance shall not be a problem in most cases.
