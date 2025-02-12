@@ -1,3 +1,10 @@
+### Notes
+
+A more efficient algorithm that can work in arbitrary dimensions
+without relying on awkward recursions and geometry alignment
+are described in
+[John Skilling; Programming the Hilbert curve. AIP Conf. Proc. 21 April 2004; 707 (1): 381–387](https://doi.org/10.1063/1.1751381).
+
 ### Overview
 
 This repository contains recursion-based implementation of Hilbert Curve Sorting algorithms for 2-tuples and 3-tuples, in C++ and TS.
@@ -98,7 +105,7 @@ This might get extremely computational and memory demanding as $s$ scales.
 
 ### Misc
 
-Generalization to higher dimensions is possible but much more complicated.
+Generalization to higher dimensions is possible but much more complicated with recursion.
 Here I only implemented the $\mathbb{H\_2}$ and $\mathbb{H\_3}$ algorithms in C++ and TS.
 
 The algorithms could be used for fast approximations of the Travelling Salesman Problem.
