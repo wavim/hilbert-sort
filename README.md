@@ -1,8 +1,8 @@
 ### Notes
 
-A more efficient algorithm that can work in arbitrary dimensions
+An algorithm that is more efficient and works in arbitrary dimensions
 without relying on awkward recursions and geometry alignment
-are described in
+is described in
 [John Skilling; Programming the Hilbert curve. AIP Conf. Proc. 21 April 2004; 707 (1): 381–387](https://doi.org/10.1063/1.1751381).
 
 ### Overview
