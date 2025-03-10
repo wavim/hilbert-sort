@@ -17,9 +17,9 @@ body {
 	color: #4c4f69;
 }
 section {
-	border-top: 5px #4c4f69 solid;
+	padding-bottom: 30px;
 	width: 100vw;
-	font-size: 1.5rem;
+	font-size: 2rem;
 }
 textarea,
 input,
@@ -29,9 +29,13 @@ button {
 	border: 1px #8c8fa1 solid;
 	border-radius: 1rem;
 	padding: 10px 10px;
-	transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	transition: filter 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
 	&:hover {
-		transform: scale(1.05);
+		filter: brightness(0.95);
+	}
+	&:focus {
+		filter: brightness(1.03);
 	}
 }
 textarea {
@@ -43,13 +47,13 @@ textarea {
 input {
 	font-family: "Courier New", Courier, monospace;
 	width: 10vw;
-	height: 3vw;
+	height: 4vw;
 	font-size: 1vw;
 }
 button {
 	font-family: "Courier New", Courier, monospace;
 	width: 10vw;
-	height: 5vw;
+	height: 4vw;
 	margin: 10px;
 	font-size: 2vw;
 }
@@ -58,13 +62,12 @@ button {
 	background-color: #f4f7ff;
 	border: 2px #8c8fa1 solid;
 	border-radius: 1rem;
-	box-shadow: 0 0 3rem 1rem rgba(124, 127, 147, 0.3);
 	width: 70%;
 	margin-right: 10%;
 }
 #colors-canvases {
 	width: 90%;
-	margin-bottom: 20px;
+	margin-bottom: 40px;
 }
 #colors-actions p {
 	width: 10vw;
