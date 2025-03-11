@@ -106,7 +106,7 @@ function drawSetClrs(clrsInput?: string): void {
 		.split("\n")
 		.map((value) => value.split(" ").map(Number))
 		.filter((rgb) => rgb.length === 3 && rgb.every(Number.isFinite));
-	if (clrs.length < 2) {
+	if (clrs.length < 1) {
 		drawSetClrs(<string>clrsTextArea.getAttribute("placeholder"));
 		return;
 	}
