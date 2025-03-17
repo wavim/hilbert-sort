@@ -1,74 +1,88 @@
-* {
-	box-sizing: border-box;
-	font-family: "Courier New", Courier, monospace;
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+
+:root {
+	--bg-color: oklch(0.97 0 0);
+	--fg-color: oklch(0.145 0 0);
+	--br-color: oklch(0.708 0 0);
 }
 
 .flex {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	flex-wrap: wrap;
 }
-.col {
+
+.flex-col {
 	flex-direction: column;
 }
 
 body {
-	background-color: #eff1f5;
-	color: #4c4f69;
+	all: initial;
+
+	min-height: 100vh;
+	box-sizing: border-box;
+
+	background-color: var(--bg-color);
+	color: var(--fg-color);
+
+	font-family: "Montserrat", sans-serif;
 }
+
 section {
-	padding-bottom: 30px;
-	width: 100vw;
+	height: 100%;
+	width: 100%;
+
 	font-size: 2rem;
 }
+
 textarea,
 input,
 button {
-	font-family: "Courier New", Courier, monospace;
-	background-color: #f4f7ff;
-	border: 1px #8c8fa1 solid;
-	border-radius: 1rem;
-	padding: 10px 10px;
-	transition: filter 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	all: initial;
+
+	background-color: var(--bg-color);
+	color: var(--fg-color);
+
+	font-size: 1.5rem;
+	text-align: center;
+	font-family: "Montserrat", sans-serif;
+
+	height: 2rem;
+	width: 10rem;
+	margin: 0.5rem;
+	padding: 1rem 1rem;
+	border-radius: 0.5rem;
+	box-shadow: 0 0 0.5rem var(--br-color);
+
+	transition: filter 0.1s ease-out;
 
 	&:hover {
 		filter: brightness(0.95);
 	}
-	&:focus {
-		filter: brightness(1.03);
+	&:active {
+		filter: brightness(1.1);
 	}
 }
+
 textarea {
-	width: 15vw;
-	height: 15vw;
-	font-size: 1.5rem;
+	height: 15rem;
 	resize: none;
-}
-input {
-	font-family: "Courier New", Courier, monospace;
-	width: 10vw;
-	height: 4vw;
-	font-size: 1vw;
-}
-button {
-	font-family: "Courier New", Courier, monospace;
-	width: 10vw;
-	height: 4vw;
-	margin: 10px;
-	font-size: 2vw;
 }
 
 #pts2d-demo canvas {
-	background-color: #f4f7ff;
-	border: 2px #8c8fa1 solid;
-	border-radius: 1rem;
-	width: 70%;
-	margin-right: 10%;
+	width: 35rem;
+	border: 0.1rem var(--br-color) solid;
+	border-radius: 0.5rem;
+	margin: 0 3rem 2rem;
+
+	background-color: var(--bg-color);
 }
+
 #colors-canvases {
-	width: 90%;
-	margin-bottom: 40px;
+	margin: 0 0 2rem;
 }
+
 #colors-actions p {
-	width: 10vw;
+	width: 3rem;
 }
