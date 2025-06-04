@@ -2,45 +2,83 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>David W. | Hilbert Curve Sort</title>
-		<link rel="icon" href="https://avatars.githubusercontent.com/u/156987370" />
-		<link rel="stylesheet" href="src/index.css" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title>David W | Hilbert Curve Sort</title>
+		<link
+			rel="icon"
+			href="https://avatars.githubusercontent.com/u/156987370"
+		/>
+		<link
+			rel="stylesheet"
+			href="src/index.css"
+		/>
 	</head>
-
 	<body>
 		<main class="flex flex-col">
-			<section id="pts2d" class="flex flex-col">
+			<section
+				id="pts2d"
+				class="flex flex-col"
+			>
 				<h2>2D Points</h2>
-				<div id="pts2d-demo" class="flex">
+				<div
+					id="pts2d-demo"
+					class="flex"
+				>
 					<canvas>sorted 2d points connected in order</canvas>
-					<div id="pts2d-actions" class="flex flex-col">
+					<div
+						id="pts2d-actions"
+						class="flex flex-col"
+					>
 						<textarea></textarea>
 						<button id="pts2d-set">Set</button>
 						<br />
-						<input type="number" placeholder="Num Points" />
+						<input
+							type="number"
+							placeholder="Num Points"
+						/>
 						<button id="pts2d-random">Random</button>
 					</div>
 				</div>
 			</section>
 			<br />
-			<section id="colors" class="flex flex-col">
+			<section
+				id="colors"
+				class="flex flex-col"
+			>
 				<h2>Colors (sRGB)</h2>
-				<div id="colors-demo" class="flex flex-col">
-					<div id="colors-canvases" class="flex flex-col">
+				<div
+					id="colors-demo"
+					class="flex flex-col"
+				>
+					<div
+						id="colors-canvases"
+						class="flex flex-col"
+					>
 						<canvas id="colors-original">original color ordering</canvas>
 						<canvas id="colors-sorted">sorted color ordering</canvas>
 					</div>
-					<div id="colors-actions" class="flex">
+					<div
+						id="colors-actions"
+						class="flex"
+					>
 						<textarea></textarea>
 						<button id="colors-set">Set</button>
 						<p></p>
-						<input type="number" placeholder="Num Colors" />
+						<input
+							type="number"
+							placeholder="Num Colors"
+						/>
 						<button id="colors-random">Random</button>
 					</div>
 				</div>
 			</section>
 		</main>
-		<script type="module" src="src/index.ts"></script>
+		<script
+			type="module"
+			src="src/index.ts"
+		></script>
 	</body>
 </html>
