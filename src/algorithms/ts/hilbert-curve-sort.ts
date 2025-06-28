@@ -23,7 +23,10 @@ export function hilbertCurveSort2D(vec2s: VEC2[]): VEC2[] {
 	const fitVec2s = <VEC2[]>vec2s.map(([x, y]) => [scaleX * (x - minX), scaleY * (y - minY)]);
 
 	// De-scaling and de-centering the results from actual sort
-	return runHilbertCurveSort2D(fitVec2s, maxSide).map(([x, y]) => [x / scaleX + minX, y / scaleY + minY]);
+	return runHilbertCurveSort2D(fitVec2s, maxSide).map(([x, y]) => [
+		x / scaleX + minX,
+		y / scaleY + minY,
+	]);
 }
 
 export function hilbertCurveSort3D(vec3s: VEC3[]): VEC3[] {

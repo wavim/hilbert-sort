@@ -11,16 +11,10 @@ const pageWidth = window.innerWidth;
 const pageHeight = window.innerHeight;
 
 // 2D Points Section
-const pts2dCvs = <HTMLCanvasElement>(
-	document.querySelector("#pts2d-demo canvas")
-);
-const pts2dTextArea = <HTMLTextAreaElement>(
-	document.querySelector("#pts2d-actions textarea")
-);
+const pts2dCvs = <HTMLCanvasElement>document.querySelector("#pts2d-demo canvas");
+const pts2dTextArea = <HTMLTextAreaElement>document.querySelector("#pts2d-actions textarea");
 const pts2dSet = <HTMLButtonElement>document.querySelector("#pts2d-set");
-const pts2dRdmN = <HTMLInputElement>(
-	document.querySelector("#pts2d-actions input")
-);
+const pts2dRdmN = <HTMLInputElement>document.querySelector("#pts2d-actions input");
 const pts2dRdm = <HTMLButtonElement>document.querySelector("#pts2d-random");
 
 const pts2dCtx = <CanvasRenderingContext2D>pts2dCvs.getContext("2d");
@@ -44,8 +38,8 @@ function draw2dPts(pts: VEC2[]): void {
 function drawSetPts(ptsInput?: string): void {
 	const pts = (ptsInput ?? pts2dTextArea.value)
 		.trim()
-		.split("; ")
-		.map((coords) => coords.split(" ").map(Number))
+		.split("\n")
+		.map((coords) => coords.split(",").map(Number))
 		.filter((vec) => vec.length === 2 && vec.every(Number.isFinite));
 	if (pts.length < 2) {
 		drawSetPts(<string>pts2dTextArea.getAttribute("placeholder"));
@@ -57,52 +51,33 @@ function drawSetPts(ptsInput?: string): void {
 		[minX, minY] = [Math.min(x, minX), Math.min(y, minY)];
 		[maxX, maxY] = [Math.max(x, maxX), Math.max(y, maxY)];
 	}
-	const scaleX =
-		pts2dSide === 40 || maxX === minX ? 1 : (pts2dSide - 40) / (maxX - minX);
-	const scaleY =
-		pts2dSide === 40 || maxY === minY ? 1 : (pts2dSide - 40) / (maxY - minY);
+	const scaleX = pts2dSide === 40 || maxX === minX ? 1 : (pts2dSide - 40) / (maxX - minX);
+	const scaleY = pts2dSide === 40 || maxY === minY ? 1 : (pts2dSide - 40) / (maxY - minY);
 
-	draw2dPts(
-		pts.map(([x, y]) => [scaleX * (x - minX) + 20, scaleY * (y - minY) + 20]),
-	);
+	draw2dPts(pts.map(([x, y]) => [scaleX * (x - minX) + 20, scaleY * (y - minY) + 20]));
 }
 pts2dSet.addEventListener("click", () => drawSetPts());
 pts2dRdm.addEventListener("click", () => {
 	let n = Number(pts2dRdmN.value);
 	if (!n) n = 100;
-	const pts = <VEC2[]>(
-		[...Array(n)].map(() => [rand(0, pts2dSide), rand(0, pts2dSide)])
-	);
+	const pts = <VEC2[]>[...Array(n)].map(() => [rand(0, pts2dSide), rand(0, pts2dSide)]);
 	draw2dPts(pts);
 });
 
-const order = 3;
+const order = 5;
 const bits = [...Array(1 << order).keys()];
-pts2dTextArea.setAttribute(
-	"placeholder",
-	bits.flatMap((x) => bits.map((y) => `${x} ${y}`)).join("; "),
-);
+pts2dTextArea.textContent = bits.flatMap((x) => bits.map((y) => `${x},${y}`)).join("\n");
 drawSetPts();
 
 // Colors (sRGB) Section
-const clrsOriginalCvs = <HTMLCanvasElement>(
-	document.querySelector("#colors-original")
-);
-const clrsSortedCvs = <HTMLCanvasElement>(
-	document.querySelector("#colors-sorted")
-);
-const clrsTextArea = <HTMLTextAreaElement>(
-	document.querySelector("#colors-actions textarea")
-);
+const clrsOriginalCvs = <HTMLCanvasElement>document.querySelector("#colors-original");
+const clrsSortedCvs = <HTMLCanvasElement>document.querySelector("#colors-sorted");
+const clrsTextArea = <HTMLTextAreaElement>document.querySelector("#colors-actions textarea");
 const clrsSet = <HTMLButtonElement>document.querySelector("#colors-set");
-const clrsRdmN = <HTMLInputElement>(
-	document.querySelector("#colors-actions input")
-);
+const clrsRdmN = <HTMLInputElement>document.querySelector("#colors-actions input");
 const clrsRdm = <HTMLButtonElement>document.querySelector("#colors-random");
 
-const clrsOriginalCtx = <CanvasRenderingContext2D>(
-	clrsOriginalCvs.getContext("2d")
-);
+const clrsOriginalCtx = <CanvasRenderingContext2D>clrsOriginalCvs.getContext("2d");
 const clrsSortedCtx = <CanvasRenderingContext2D>clrsSortedCvs.getContext("2d");
 const clrsCvsWidth = pageWidth * 0.9;
 const clrsCvsHeight = pageHeight * 0.1;
@@ -133,8 +108,8 @@ function drawClrs(clrs: VEC3[]): void {
 function drawSetClrs(clrsInput?: string): void {
 	const clrs = <VEC3[]>(clrsInput ?? clrsTextArea.value)
 		.trim()
-		.split("; ")
-		.map((value) => value.split(" ").map(Number))
+		.split("\n")
+		.map((value) => value.split(",").map(Number))
 		.filter((rgb) => rgb.length === 3 && rgb.every(Number.isFinite));
 	if (clrs.length < 1) {
 		drawSetClrs(<string>clrsTextArea.getAttribute("placeholder"));
@@ -154,14 +129,7 @@ clrsRdm.addEventListener("click", () => {
 });
 
 const step = 50;
-const clrBits = [...Array(Math.trunc(255 / step) + 1).keys()].map(
-	(b) => step * b,
-);
-const rgbUniform = clrBits.flatMap((r) =>
-	clrBits.flatMap((g) => clrBits.map((b) => [r, g, b])),
-);
-clrsTextArea.setAttribute(
-	"placeholder",
-	rgbUniform.map((rgb) => rgb.join(" ")).join("; "),
-);
+const clrBits = [...Array(Math.trunc(255 / step) + 1).keys()].map((b) => step * b);
+const rgbUniform = clrBits.flatMap((r) => clrBits.flatMap((g) => clrBits.map((b) => [r, g, b])));
+clrsTextArea.textContent = rgbUniform.map((rgb) => rgb.join(",")).join("\n");
 drawSetClrs();

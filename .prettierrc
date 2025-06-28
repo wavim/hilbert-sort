@@ -2,7 +2,7 @@
 	"endOfLine": "auto",
 	"htmlWhitespaceSensitivity": "css",
 	"objectWrap": "collapse",
-	"printWidth": 80,
+	"printWidth": 100,
 	"proseWrap": "always",
 	"quoteProps": "consistent",
 	"semi": true,
