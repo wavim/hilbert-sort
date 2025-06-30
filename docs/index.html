@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -11,65 +11,49 @@
 			rel="icon"
 			href="https://avatars.githubusercontent.com/u/156987370"
 		/>
-		<script type="module" crossorigin src="./assets/index-ByVk7o3k.js"></script>
-		<link rel="stylesheet" crossorigin href="./assets/index-HwFxX__O.css">
+		<script type="module" crossorigin src="./assets/index-DlrHKldt.js"></script>
+		<link rel="stylesheet" crossorigin href="./assets/index-pIGMwiw6.css">
 	</head>
 	<body>
-		<main class="flex flex-col">
-			<section
-				id="pts2d"
-				class="flex flex-col"
-			>
-				<h2>2D Points</h2>
-				<div
-					id="pts2d-demo"
-					class="flex"
+		<main class="flex col align">
+			<h1>2D Points</h1>
+			<section class="flex align justify gap">
+				<canvas id="points-canvas"
+					>sorted 2d points connected in order</canvas
 				>
-					<canvas>sorted 2d points connected in order</canvas>
-					<div
-						id="pts2d-actions"
-						class="flex flex-col"
-					>
-						<textarea></textarea>
-						<button id="pts2d-set">Set</button>
-						<br />
-						<input
-							type="number"
-							placeholder="Num Points"
-						/>
-						<button id="pts2d-random">Random</button>
-					</div>
+				<div class="flex col">
+					<textarea id="points-input"></textarea>
+					<button id="points-set">Set</button>
+					<br />
+					<input
+						id="points-number"
+						type="number"
+					/>
+					<button id="points-random">Rdm</button>
 				</div>
 			</section>
+
 			<br />
-			<section
-				id="colors"
-				class="flex flex-col"
-			>
-				<h2>Colors (sRGB)</h2>
-				<div
-					id="colors-demo"
-					class="flex flex-col"
-				>
-					<div
-						id="colors-canvases"
-						class="flex flex-col"
+
+			<h1>RGB Colors</h1>
+			<section class="flex col align gap">
+				<div class="flex col">
+					<canvas id="colors-original"
+						>original color spectrum</canvas
 					>
-						<canvas id="colors-original">original color ordering</canvas>
-						<canvas id="colors-sorted">sorted color ordering</canvas>
-					</div>
-					<div
-						id="colors-actions"
-						class="flex"
-					>
-						<textarea></textarea>
+					<canvas id="colors-sorted">sorted color spectrum</canvas>
+				</div>
+				<div class="flex gap">
+					<div class="flex">
+						<textarea id="colors-input"></textarea>
 						<button id="colors-set">Set</button>
-						<p></p>
+					</div>
+					<div class="flex">
 						<input
+							id="colors-number"
 							type="number"
-							placeholder="Num Colors"
 						/>
-						<button id="colors-random">Random</button>
+						<button id="colors-random">Rdm</button>
 					</div>
 				</div>
 			</section>

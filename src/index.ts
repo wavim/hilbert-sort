@@ -1,135 +1,198 @@
 import {
 	hilbertCurveSort2D,
 	hilbertCurveSort3D,
-	VEC2,
-	VEC3,
+	Vec2,
+	Vec3,
 } from "./algorithms/ts/hilbert-curve-sort.js";
+import { minmax } from "./utils/minmax.js";
 
-const rand = (a: number, b: number) => Math.random() * (b - a) + a;
-
-const pageWidth = window.innerWidth;
-const pageHeight = window.innerHeight;
-
-// 2D Points Section
-const pts2dCvs = <HTMLCanvasElement>document.querySelector("#pts2d-demo canvas");
-const pts2dTextArea = <HTMLTextAreaElement>document.querySelector("#pts2d-actions textarea");
-const pts2dSet = <HTMLButtonElement>document.querySelector("#pts2d-set");
-const pts2dRdmN = <HTMLInputElement>document.querySelector("#pts2d-actions input");
-const pts2dRdm = <HTMLButtonElement>document.querySelector("#pts2d-random");
-
-const pts2dCtx = <CanvasRenderingContext2D>pts2dCvs.getContext("2d");
-const pts2dSide = pageWidth * 0.45;
-pts2dCvs.setAttribute("width", String(pts2dSide));
-pts2dCvs.setAttribute("height", String(pts2dSide));
-
-function draw2dPts(pts: VEC2[]): void {
-	pts2dCtx.clearRect(0, 0, pts2dSide, pts2dSide);
-
-	const sorted = hilbertCurveSort2D(pts);
-	pts2dCtx.beginPath();
-	for (let [x, y] of sorted) {
-		y = pts2dSide - y;
-		if (sorted.length <= 500) pts2dCtx.fillRect(x - 4, y - 4, 8, 8);
-		pts2dCtx.lineTo(x, y);
-	}
-	pts2dCtx.stroke();
+function rand(a: number, b: number): number {
+	return Math.random() * (b - a) + a;
 }
 
-function drawSetPts(ptsInput?: string): void {
-	const pts = (ptsInput ?? pts2dTextArea.value)
+// #region points
+
+const pointsCanvas = document.getElementById("points-canvas") as HTMLCanvasElement;
+const pointsInput = document.getElementById("points-input") as HTMLTextAreaElement;
+const pointsSet = document.getElementById("points-set") as HTMLButtonElement;
+const pointsNumber = document.getElementById("points-number") as HTMLInputElement;
+const pointsRandom = document.getElementById("points-random") as HTMLButtonElement;
+
+const pointsSide = document.documentElement.clientWidth * 0.35;
+
+pointsCanvas.width = pointsSide;
+pointsCanvas.height = pointsSide;
+
+const pointsContext = pointsCanvas.getContext("2d");
+
+if (!pointsContext) {
+	throw new Error("missing canvas context");
+}
+
+function drawPoints(context: CanvasRenderingContext2D, points: Vec2[]): void {
+	const sorted = hilbertCurveSort2D(points);
+
+	const [minx, maxx] = minmax(sorted, 0);
+	const [miny, maxy] = minmax(sorted, 1);
+
+	const scalex = (pointsSide - 10) / (maxx - minx);
+	const scaley = (pointsSide - 10) / (maxy - miny);
+
+	context.clearRect(0, 0, pointsSide, pointsSide);
+	context.beginPath();
+
+	const mapped = sorted.map(([x, y]) => [scalex * (x - minx) + 5, scaley * (y - miny) + 5]);
+
+	for (const [x, y] of mapped) {
+		context.lineTo(x, pointsSide - y);
+	}
+
+	context.stroke();
+}
+
+function setPoints(context: CanvasRenderingContext2D): void {
+	const points = pointsInput.value
 		.trim()
 		.split("\n")
-		.map((coords) => coords.split(",").map(Number))
-		.filter((vec) => vec.length === 2 && vec.every(Number.isFinite));
-	if (pts.length < 2) {
-		drawSetPts(<string>pts2dTextArea.getAttribute("placeholder"));
+		.map((c) => c.split(",").map((x) => +x.trim()))
+		.filter((v) => v.length === 2) as Vec2[];
+
+	if (points.length < 3) {
 		return;
 	}
-	let [minX, minY] = [Infinity, Infinity];
-	let [maxX, maxY] = [-Infinity, -Infinity];
-	for (const [x, y] of pts) {
-		[minX, minY] = [Math.min(x, minX), Math.min(y, minY)];
-		[maxX, maxY] = [Math.max(x, maxX), Math.max(y, maxY)];
-	}
-	const scaleX = pts2dSide === 40 || maxX === minX ? 1 : (pts2dSide - 40) / (maxX - minX);
-	const scaleY = pts2dSide === 40 || maxY === minY ? 1 : (pts2dSide - 40) / (maxY - minY);
 
-	draw2dPts(pts.map(([x, y]) => [scaleX * (x - minX) + 20, scaleY * (y - minY) + 20]));
+	drawPoints(context, points);
 }
-pts2dSet.addEventListener("click", () => drawSetPts());
-pts2dRdm.addEventListener("click", () => {
-	let n = Number(pts2dRdmN.value);
-	if (!n) n = 100;
-	const pts = <VEC2[]>[...Array(n)].map(() => [rand(0, pts2dSide), rand(0, pts2dSide)]);
-	draw2dPts(pts);
+
+pointsSet.addEventListener("click", () => {
+	setPoints(pointsContext);
 });
+
+pointsRandom.addEventListener("click", () => {
+	let n = +pointsNumber.value;
+
+	if (n < 2 || Number.isNaN(n)) {
+		n = 200;
+	}
+
+	const points = [...Array<number>(n)].map(() => {
+		return [rand(0, pointsSide), rand(0, pointsSide)] as Vec2;
+	});
+
+	drawPoints(pointsContext, points);
+});
+
+pointsNumber.value = "200";
 
 const order = 5;
-const bits = [...Array(1 << order).keys()];
-pts2dTextArea.textContent = bits.flatMap((x) => bits.map((y) => `${x},${y}`)).join("\n");
-drawSetPts();
+const pointBits = [...Array(1 << order).keys()];
 
-// Colors (sRGB) Section
-const clrsOriginalCvs = <HTMLCanvasElement>document.querySelector("#colors-original");
-const clrsSortedCvs = <HTMLCanvasElement>document.querySelector("#colors-sorted");
-const clrsTextArea = <HTMLTextAreaElement>document.querySelector("#colors-actions textarea");
-const clrsSet = <HTMLButtonElement>document.querySelector("#colors-set");
-const clrsRdmN = <HTMLInputElement>document.querySelector("#colors-actions input");
-const clrsRdm = <HTMLButtonElement>document.querySelector("#colors-random");
+pointsInput.textContent = pointBits
+	.flatMap((x) => pointBits.map((y) => [x, y].join(",")))
+	.join("\n");
+setPoints(pointsContext);
 
-const clrsOriginalCtx = <CanvasRenderingContext2D>clrsOriginalCvs.getContext("2d");
-const clrsSortedCtx = <CanvasRenderingContext2D>clrsSortedCvs.getContext("2d");
-const clrsCvsWidth = pageWidth * 0.9;
-const clrsCvsHeight = pageHeight * 0.1;
-clrsOriginalCvs.setAttribute("width", String(clrsCvsWidth));
-clrsOriginalCvs.setAttribute("height", String(clrsCvsHeight));
-clrsSortedCvs.setAttribute("width", String(clrsCvsWidth));
-clrsSortedCvs.setAttribute("height", String(clrsCvsHeight));
+// #endregion points
 
-function drawClrs(clrs: VEC3[]): void {
-	clrsOriginalCtx.clearRect(0, 0, clrsCvsWidth, clrsCvsHeight);
-	clrsSortedCtx.clearRect(0, 0, clrsCvsWidth, clrsCvsHeight);
-	const clrWidth = clrsCvsWidth / clrs.length;
+// #region colors
 
-	for (let i = 0; i < clrs.length; i++) {
-		const [r, g, b] = clrs[i];
-		clrsOriginalCtx.fillStyle = `rgb(${r} ${g} ${b})`;
-		clrsOriginalCtx.fillRect(i * clrWidth, 0, clrWidth + 1, clrsCvsHeight);
+const colorsOriginal = document.getElementById("colors-original") as HTMLCanvasElement;
+const colorsSorted = document.getElementById("colors-sorted") as HTMLCanvasElement;
+const colorsInput = document.getElementById("colors-input") as HTMLTextAreaElement;
+const colorsSet = document.getElementById("colors-set") as HTMLButtonElement;
+const colorsNumber = document.getElementById("colors-number") as HTMLInputElement;
+const colorsRandom = document.getElementById("colors-random") as HTMLButtonElement;
+
+const colorsWidth = document.documentElement.clientWidth;
+const colorsHeight = 100;
+
+colorsOriginal.width = colorsWidth;
+colorsSorted.width = colorsWidth;
+colorsOriginal.height = colorsHeight;
+colorsSorted.height = colorsHeight;
+
+const colorsOriginalContext = colorsOriginal.getContext("2d");
+const colorsSortedContext = colorsSorted.getContext("2d");
+
+if (!colorsOriginalContext || !colorsSortedContext) {
+	throw new Error("missing canvas context");
+}
+
+function drawColors(
+	originalContext: CanvasRenderingContext2D,
+	sortedContext: CanvasRenderingContext2D,
+	colors: Vec3[],
+): void {
+	const sorted = hilbertCurveSort3D(colors);
+
+	const width = colorsWidth / colors.length;
+
+	originalContext.clearRect(0, 0, colorsWidth, colorsHeight);
+
+	for (let i = 0; i < colors.length; i++) {
+		const [r, g, b] = colors[i].map((x) => x.toFixed(2));
+
+		originalContext.fillStyle = `rgb(${r} ${g} ${b})`;
+		originalContext.fillRect(i * width, 0, width + 1, colorsHeight);
 	}
 
-	const sorted = hilbertCurveSort3D(clrs);
+	sortedContext.clearRect(0, 0, colorsWidth, colorsHeight);
+
 	for (let i = 0; i < sorted.length; i++) {
-		const [r, g, b] = sorted[i];
-		clrsSortedCtx.fillStyle = `rgb(${r} ${g} ${b})`;
-		clrsSortedCtx.fillRect(i * clrWidth, 0, clrWidth + 1, clrsCvsHeight);
+		const [r, g, b] = sorted[i].map((x) => x.toFixed(2));
+
+		sortedContext.fillStyle = `rgb(${r} ${g} ${b})`;
+		sortedContext.fillRect(i * width, 0, width + 1, colorsHeight);
 	}
 }
 
-function drawSetClrs(clrsInput?: string): void {
-	const clrs = <VEC3[]>(clrsInput ?? clrsTextArea.value)
+function setColors(
+	originalContext: CanvasRenderingContext2D,
+	sortedContext: CanvasRenderingContext2D,
+): void {
+	const colors = colorsInput.value
 		.trim()
 		.split("\n")
-		.map((value) => value.split(",").map(Number))
-		.filter((rgb) => rgb.length === 3 && rgb.every(Number.isFinite));
-	if (clrs.length < 1) {
-		drawSetClrs(<string>clrsTextArea.getAttribute("placeholder"));
+		.map((c) => c.split(",").map((x) => +x.trim()))
+		.filter((v) => v.length === 3) as Vec3[];
+
+	if (colors.length < 3) {
 		return;
 	}
-	drawClrs(clrs);
-}
-clrsSet.addEventListener("click", () => drawSetClrs());
 
-function rdmClrs(n: number): VEC3[] {
-	return [...Array(n)].map(() => [rand(0, 255), rand(0, 255), rand(0, 255)]);
+	drawColors(originalContext, sortedContext, colors);
 }
-clrsRdm.addEventListener("click", () => {
-	let n = Number(clrsRdmN.value);
-	if (!n) n = 100;
-	drawClrs(rdmClrs(n));
+
+colorsSet.addEventListener("click", () => {
+	setColors(colorsOriginalContext, colorsSortedContext);
 });
 
-const step = 50;
-const clrBits = [...Array(Math.trunc(255 / step) + 1).keys()].map((b) => step * b);
-const rgbUniform = clrBits.flatMap((r) => clrBits.flatMap((g) => clrBits.map((b) => [r, g, b])));
-clrsTextArea.textContent = rgbUniform.map((rgb) => rgb.join(",")).join("\n");
-drawSetClrs();
+colorsRandom.addEventListener("click", () => {
+	let n = +colorsNumber.value;
+
+	if (n < 2 || Number.isNaN(n)) {
+		n = 100;
+	}
+
+	const colors = [...Array<number>(n)].map(() => {
+		return [rand(0, 255), rand(0, 255), rand(0, 255)] as Vec3;
+	});
+
+	drawColors(colorsOriginalContext, colorsSortedContext, colors);
+});
+
+colorsNumber.value = "100";
+
+const step = 32;
+const colorBits = [...Array(Math.ceil(255 / step)).keys()].map((b) => b * step);
+
+colorsInput.textContent = colorBits
+	.flatMap((r) => {
+		return colorBits.flatMap((g) => {
+			return colorBits.map((b) => [r, g, b].join(","));
+		});
+	})
+	.join("\n");
+setColors(colorsOriginalContext, colorsSortedContext);
+
+// #endregion colors
