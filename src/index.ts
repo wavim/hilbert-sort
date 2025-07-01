@@ -1,9 +1,4 @@
-import {
-	hilbertCurveSort2D,
-	hilbertCurveSort3D,
-	Vec2,
-	Vec3,
-} from "./algorithms/ts/hilbert-curve-sort.js";
+import { sort2D, sort3D, Vec2, Vec3 } from "./algorithms/ts/hilbert-curve-sort.js";
 import { minmax } from "./utils/minmax.js";
 
 function rand(a: number, b: number): number {
@@ -30,7 +25,7 @@ if (!pointsContext) {
 }
 
 function drawPoints(context: CanvasRenderingContext2D, points: Vec2[]): void {
-	const sorted = hilbertCurveSort2D(points);
+	const sorted = sort2D(points);
 
 	const [minx, maxx] = minmax(sorted, 0);
 	const [miny, maxy] = minmax(sorted, 1);
@@ -123,7 +118,7 @@ function drawColors(
 	sortedContext: CanvasRenderingContext2D,
 	colors: Vec3[],
 ): void {
-	const sorted = hilbertCurveSort3D(colors);
+	const sorted = sort3D(colors);
 
 	const width = colorsWidth / colors.length;
 
