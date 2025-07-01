@@ -59,7 +59,7 @@ function gray(n: number): number[] {
 }
 
 function runSort2D(vec2s: Vec2[], side: number): Vec2[] {
-	if (vec2s.length < 2 || new Set(vec2s.map(String)).size === 1) {
+	if (isBase2D(vec2s)) {
 		return vec2s;
 	}
 
@@ -98,7 +98,7 @@ function runSort2D(vec2s: Vec2[], side: number): Vec2[] {
 }
 
 function runSort3D(vec3s: Vec3[], side: number): Vec3[] {
-	if (vec3s.length < 2 || new Set(vec3s.map(String)).size === 1) {
+	if (isBase3D(vec3s)) {
 		return vec3s;
 	}
 
@@ -152,4 +152,28 @@ function runSort3D(vec3s: Vec3[], side: number): Vec3[] {
 
 	// Order octants w.r.t G_3 and inv-transform
 	return gray(3).flatMap((oct) => sorted[oct].map(invs[oct]));
+}
+
+function isBase2D(vec2s: Vec2[]): boolean {
+	if (vec2s.length < 2) {
+		return true;
+	}
+
+	const first = vec2s[0];
+
+	return vec2s.slice(1).every((vec2) => {
+		return vec2[0] === first[0] && vec2[1] === first[1];
+	});
+}
+
+function isBase3D(vec3s: Vec3[]): boolean {
+	if (vec3s.length < 2) {
+		return true;
+	}
+
+	const first = vec3s[0];
+
+	return vec3s.slice(1).every((vec3) => {
+		return vec3[0] === first[0] && vec3[1] === first[1] && vec3[2] === first[2];
+	});
 }

@@ -7,7 +7,6 @@
 #include <functional>
 #include <iterator>
 #include <limits>
-#include <set>
 
 void run_sort_2d(std::vector<std::array<double, 2>> &vec2s, double side);
 void run_sort_3d(std::vector<std::array<double, 3>> &vec3s, double side);
@@ -107,9 +106,7 @@ void run_sort_2d(std::vector<std::array<double, 2>> &vec2s, const double side) {
 
   std::array<std::function<void(std::array<double, 2> &)>, 4> maps;
 
-  maps[0b00] = [](std::array<double, 2> &vec2) {
-    vec2 = {vec2[1], vec2[0]};
-  };
+  maps[0b00] = [](std::array<double, 2> &vec2) { vec2 = {vec2[1], vec2[0]}; };
   maps[0b01] = [mid](std::array<double, 2> &vec2) {
     vec2 = {vec2[0], vec2[1] - mid};
   };
@@ -122,9 +119,7 @@ void run_sort_2d(std::vector<std::array<double, 2>> &vec2s, const double side) {
 
   std::array<std::function<void(std::array<double, 2> &)>, 4> invs;
 
-  invs[0b00] = [](std::array<double, 2> &vec2) {
-    vec2 = {vec2[1], vec2[0]};
-  };
+  invs[0b00] = [](std::array<double, 2> &vec2) { vec2 = {vec2[1], vec2[0]}; };
   invs[0b01] = [mid](std::array<double, 2> &vec2) {
     vec2 = {vec2[0], vec2[1] + mid};
   };
@@ -135,19 +130,17 @@ void run_sort_2d(std::vector<std::array<double, 2>> &vec2s, const double side) {
     vec2 = {side - vec2[1], mid - vec2[0]};
   };
 
-  std::array quads = {
-      std::vector<std::array<double, 2>>{},
-      std::vector<std::array<double, 2>>{},
-      std::vector<std::array<double, 2>>{},
-      std::vector<std::array<double, 2>>{}
-  };
+  std::array quads = {std::vector<std::array<double, 2>>{},
+                      std::vector<std::array<double, 2>>{},
+                      std::vector<std::array<double, 2>>{},
+                      std::vector<std::array<double, 2>>{}};
 
   for (auto &vec2 : vec2s) {
     const bool bit_x = vec2[0] > mid;
     const bool bit_y = vec2[1] > mid;
 
-    const uint8_t quad = (static_cast<int>(bit_x) << 1) +
-                         static_cast<int>(bit_y);
+    const uint8_t quad =
+        (static_cast<int>(bit_x) << 1) + static_cast<int>(bit_y);
 
     maps[quad](vec2);
     quads[quad].push_back(vec2);
@@ -164,8 +157,7 @@ void run_sort_2d(std::vector<std::array<double, 2>> &vec2s, const double side) {
       invs[quad](vec2);
     }
 
-    result.insert(result.end(),
-                  make_move_iterator(quads[quad].begin()),
+    result.insert(result.end(), make_move_iterator(quads[quad].begin()),
                   make_move_iterator(quads[quad].end()));
   }
 
@@ -233,16 +225,14 @@ void run_sort_3d(std::vector<std::array<double, 3>> &vec3s, const double side) {
     vec3 = {side - vec3[1], vec3[2], mid - vec3[0]};
   };
 
-  std::array octs = {
-      std::vector<std::array<double, 3>>{},
-      std::vector<std::array<double, 3>>{},
-      std::vector<std::array<double, 3>>{},
-      std::vector<std::array<double, 3>>{},
-      std::vector<std::array<double, 3>>{},
-      std::vector<std::array<double, 3>>{},
-      std::vector<std::array<double, 3>>{},
-      std::vector<std::array<double, 3>>{}
-  };
+  std::array octs = {std::vector<std::array<double, 3>>{},
+                     std::vector<std::array<double, 3>>{},
+                     std::vector<std::array<double, 3>>{},
+                     std::vector<std::array<double, 3>>{},
+                     std::vector<std::array<double, 3>>{},
+                     std::vector<std::array<double, 3>>{},
+                     std::vector<std::array<double, 3>>{},
+                     std::vector<std::array<double, 3>>{}};
 
   for (auto &vec3 : vec3s) {
     const bool bit_x = vec3[0] > mid;
@@ -268,8 +258,7 @@ void run_sort_3d(std::vector<std::array<double, 3>> &vec3s, const double side) {
       invs[oct](vec3);
     }
 
-    result.insert(result.end(),
-                  make_move_iterator(octs[oct].begin()),
+    result.insert(result.end(), make_move_iterator(octs[oct].begin()),
                   make_move_iterator(octs[oct].end()));
   }
 
@@ -281,10 +270,10 @@ auto is_base_2d(const std::vector<std::array<double, 2>> &vec2s) -> bool {
     return true;
   }
 
-  const std::set unique_vec2s(
-      make_move_iterator(vec2s.begin()), make_move_iterator(vec2s.end()));
+  const auto &first = vec2s[0];
 
-  return unique_vec2s.size() == 1;
+  return std::all_of(vec2s.begin() + 1, vec2s.end(),
+                     [&first](const auto &vec2) { return vec2 == first; });
 }
 
 auto is_base_3d(const std::vector<std::array<double, 3>> &vec3s) -> bool {
@@ -292,8 +281,8 @@ auto is_base_3d(const std::vector<std::array<double, 3>> &vec3s) -> bool {
     return true;
   }
 
-  const std::set unique_vec3s(
-      make_move_iterator(vec3s.begin()), make_move_iterator(vec3s.end()));
+  const auto &first = vec3s[0];
 
-  return unique_vec3s.size() == 1;
+  return std::all_of(vec3s.begin() + 1, vec3s.end(),
+                     [&first](const auto &vec3) { return vec3 == first; });
 }
