@@ -32,7 +32,7 @@ const pointsSet = document.getElementById("points-set") as HTMLButtonElement;
 const pointsNumber = document.getElementById("points-number") as HTMLInputElement;
 const pointsRandom = document.getElementById("points-random") as HTMLButtonElement;
 
-const pointsSide = document.documentElement.clientWidth * 0.35;
+const pointsSide = document.documentElement.clientWidth * 0.4;
 
 pointsCanvas.width = pointsSide;
 pointsCanvas.height = pointsSide;
