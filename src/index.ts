@@ -1,5 +1,24 @@
 import { sort2D, sort3D, Vec2, Vec3 } from "./algorithms/ts/hilbert-curve-sort.js";
-import { minmax } from "./utils/minmax.js";
+
+function minmax(vecs: number[][], i: number): [number, number] {
+	let min = Infinity;
+	let max = -Infinity;
+
+	for (const vec of vecs) {
+		const x = vec[i];
+
+		if (x < min) {
+			min = x;
+			continue;
+		}
+
+		if (x > max) {
+			max = x;
+		}
+	}
+
+	return [min, max];
+}
 
 function rand(a: number, b: number): number {
 	return Math.random() * (b - a) + a;

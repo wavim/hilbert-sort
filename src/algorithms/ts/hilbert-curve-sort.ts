@@ -1,5 +1,3 @@
-import { minmax } from "../../utils/minmax";
-
 export type Vec2 = [number, number];
 export type Vec3 = [number, number, number];
 
@@ -48,6 +46,26 @@ export function sort3D(vec3s: Vec3[]): Vec3[] {
 	return runSort3D(fitted, bound).map(
 		([x, y, z]) => [x / scalex + minx, y / scaley + miny, z / scalez + minz] as Vec3,
 	);
+}
+
+function minmax(vecs: number[][], i: number): [number, number] {
+	let min = Infinity;
+	let max = -Infinity;
+
+	for (const item of vecs) {
+		const value = item[i];
+
+		if (value < min) {
+			min = value;
+			continue;
+		}
+
+		if (value > max) {
+			max = value;
+		}
+	}
+
+	return [min, max];
 }
 
 type Maps2D = Record<number, (vec2: Vec2) => Vec2>;
