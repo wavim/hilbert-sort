@@ -71,7 +71,7 @@ pointsSet.addEventListener("click", () => {
 pointsRandom.addEventListener("click", () => {
 	let n = +pointsNumber.value;
 
-	if (n < 2 || Number.isNaN(n)) {
+	if (n < 3 || Number.isNaN(n)) {
 		n = 200;
 	}
 
@@ -170,7 +170,7 @@ colorsSet.addEventListener("click", () => {
 colorsRandom.addEventListener("click", () => {
 	let n = +colorsNumber.value;
 
-	if (n < 2 || Number.isNaN(n)) {
+	if (n < 3 || Number.isNaN(n)) {
 		n = 100;
 	}
 
