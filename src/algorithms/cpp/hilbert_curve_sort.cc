@@ -3,28 +3,30 @@
 
 #include "hilbert_curve_sort.h"
 
+#include <algorithm>
 #include <cstdint>
 #include <functional>
 #include <iterator>
-#include <limits>
 
 void run_sort_2d(std::vector<std::array<double, 2>> &vec2s, double side);
-void run_sort_3d(std::vector<std::array<double, 3>> &vec3s, double side);
 auto is_base_2d(const std::vector<std::array<double, 2>> &vec2s) -> bool;
+void run_sort_3d(std::vector<std::array<double, 3>> &vec3s, double side);
 auto is_base_3d(const std::vector<std::array<double, 3>> &vec3s) -> bool;
 
-void sort_2d(std::vector<std::array<double, 2>> &vec2s) {
-  double min_x = std::numeric_limits<double>::max();
-  double max_x = std::numeric_limits<double>::lowest();
-  double min_y = std::numeric_limits<double>::max();
-  double max_y = std::numeric_limits<double>::lowest();
+constexpr std::array<uint8_t, 4> gray2 = {0b00, 0b01, 0b11, 0b10};
+constexpr std::array<uint8_t, 8> gray3 = {0b000, 0b001, 0b011, 0b010,
+                                          0b110, 0b111, 0b101, 0b100};
 
-  for (const auto &vec2 : vec2s) {
-    min_x = std::min(min_x, vec2[0]);
-    max_x = std::max(max_x, vec2[0]);
-    min_y = std::min(min_y, vec2[1]);
-    max_y = std::max(max_y, vec2[1]);
-  }
+void sort_2d(std::vector<std::array<double, 2>> &vec2s) {
+  const auto [min_x_it, max_x_it] = std::ranges::minmax_element(
+      vec2s, {}, [](const auto &vec) { return vec[0]; });
+  const double min_x = (*min_x_it)[0];
+  const double max_x = (*max_x_it)[0];
+
+  const auto [min_y_it, max_y_it] = std::ranges::minmax_element(
+      vec2s, {}, [](const auto &vec) { return vec[1]; });
+  const double min_y = (*min_y_it)[1];
+  const double max_y = (*max_y_it)[1];
 
   const double side_x = max_x - min_x;
   const double side_y = max_y - min_y;
@@ -46,22 +48,85 @@ void sort_2d(std::vector<std::array<double, 2>> &vec2s) {
   }
 };
 
-void sort_3d(std::vector<std::array<double, 3>> &vec3s) {
-  double min_x = std::numeric_limits<double>::max();
-  double max_x = std::numeric_limits<double>::lowest();
-  double min_y = std::numeric_limits<double>::max();
-  double max_y = std::numeric_limits<double>::lowest();
-  double min_z = std::numeric_limits<double>::max();
-  double max_z = std::numeric_limits<double>::lowest();
-
-  for (const auto &vec3 : vec3s) {
-    min_x = std::min(min_x, vec3[0]);
-    max_x = std::max(max_x, vec3[0]);
-    min_y = std::min(min_y, vec3[1]);
-    max_y = std::max(max_y, vec3[1]);
-    min_z = std::min(min_z, vec3[2]);
-    max_z = std::max(max_z, vec3[2]);
+void run_sort_2d(std::vector<std::array<double, 2>> &vec2s, const double side) {
+  if (is_base_2d(vec2s)) {
+    return;
   }
+
+  const double mid = side / 2;
+
+  const std::array<std::function<void(std::array<double, 2> &)>, 4> maps{
+      [](auto &vec2) { vec2 = {vec2[1], vec2[0]}; },
+      [mid](auto &vec2) { vec2 = {vec2[0], vec2[1] - mid}; },
+      [side, mid](auto &vec2) { vec2 = {mid - vec2[1], side - vec2[0]}; },
+      [mid](auto &vec2) { vec2 = {vec2[0] - mid, vec2[1] - mid}; }};
+
+  std::array quads = {std::vector<std::array<double, 2>>{},
+                      std::vector<std::array<double, 2>>{},
+                      std::vector<std::array<double, 2>>{},
+                      std::vector<std::array<double, 2>>{}};
+
+  for (auto &vec2 : vec2s) {
+    const bool bit_x = vec2[0] > mid;
+    const bool bit_y = vec2[1] > mid;
+
+    const uint8_t quad =
+        (static_cast<int>(bit_x) << 1) + static_cast<int>(bit_y);
+
+    maps[quad](vec2);
+    quads[quad].push_back(vec2);
+  }
+
+  for (auto &quad_vec2s : quads) {
+    run_sort_2d(quad_vec2s, mid);
+  }
+
+  std::vector<std::array<double, 2>> result;
+
+  const std::array<std::function<void(std::array<double, 2> &)>, 4> invs{
+      [](auto &vec2) { vec2 = {vec2[1], vec2[0]}; },
+      [mid](auto &vec2) { vec2 = {vec2[0], vec2[1] + mid}; },
+      [side, mid](auto &vec2) { vec2 = {side - vec2[1], mid - vec2[0]}; },
+      [mid](auto &vec2) { vec2 = {vec2[0] + mid, vec2[1] + mid}; }};
+
+  for (const auto quad : gray2) {
+    for (auto &vec2 : quads[quad]) {
+      invs[quad](vec2);
+    }
+
+    result.insert(result.end(), make_move_iterator(quads[quad].begin()),
+                  make_move_iterator(quads[quad].end()));
+  }
+
+  vec2s = result;
+}
+
+auto is_base_2d(const std::vector<std::array<double, 2>> &vec2s) -> bool {
+  if (vec2s.size() < 2) {
+    return true;
+  }
+
+  const auto &first = vec2s[0];
+
+  return std::all_of(vec2s.begin() + 1, vec2s.end(),
+                     [&first](const auto &vec2) { return vec2 == first; });
+}
+
+void sort_3d(std::vector<std::array<double, 3>> &vec3s) {
+  const auto [min_x_it, max_x_it] = std::ranges::minmax_element(
+      vec3s, {}, [](const auto &vec) { return vec[0]; });
+  const double min_x = (*min_x_it)[0];
+  const double max_x = (*max_x_it)[0];
+
+  const auto [min_y_it, max_y_it] = std::ranges::minmax_element(
+      vec3s, {}, [](const auto &vec) { return vec[1]; });
+  const double min_y = (*min_y_it)[1];
+  const double max_y = (*max_y_it)[1];
+
+  const auto [min_z_it, max_z_it] = std::ranges::minmax_element(
+      vec3s, {}, [](const auto &vec) { return vec[2]; });
+  const double min_z = (*min_z_it)[2];
+  const double max_z = (*max_z_it)[2];
 
   const double side_x = max_x - min_x;
   const double side_y = max_y - min_y;
@@ -87,83 +152,6 @@ void sort_3d(std::vector<std::array<double, 3>> &vec3s) {
   }
 };
 
-auto gray(const uint8_t n) {
-  std::vector<uint8_t> code;
-
-  for (uint8_t bit = 0; bit < (1 << n); bit++) {
-    code.push_back(bit ^ (bit >> 1));
-  }
-
-  return code;
-};
-
-void run_sort_2d(std::vector<std::array<double, 2>> &vec2s, const double side) {
-  if (is_base_2d(vec2s)) {
-    return;
-  }
-
-  const double mid = side / 2;
-
-  std::array<std::function<void(std::array<double, 2> &)>, 4> maps;
-
-  maps[0b00] = [](std::array<double, 2> &vec2) { vec2 = {vec2[1], vec2[0]}; };
-  maps[0b01] = [mid](std::array<double, 2> &vec2) {
-    vec2 = {vec2[0], vec2[1] - mid};
-  };
-  maps[0b11] = [mid](std::array<double, 2> &vec2) {
-    vec2 = {vec2[0] - mid, vec2[1] - mid};
-  };
-  maps[0b10] = [side, mid](std::array<double, 2> &vec2) {
-    vec2 = {mid - vec2[1], side - vec2[0]};
-  };
-
-  std::array<std::function<void(std::array<double, 2> &)>, 4> invs;
-
-  invs[0b00] = [](std::array<double, 2> &vec2) { vec2 = {vec2[1], vec2[0]}; };
-  invs[0b01] = [mid](std::array<double, 2> &vec2) {
-    vec2 = {vec2[0], vec2[1] + mid};
-  };
-  invs[0b11] = [mid](std::array<double, 2> &vec2) {
-    vec2 = {vec2[0] + mid, vec2[1] + mid};
-  };
-  invs[0b10] = [side, mid](std::array<double, 2> &vec2) {
-    vec2 = {side - vec2[1], mid - vec2[0]};
-  };
-
-  std::array quads = {std::vector<std::array<double, 2>>{},
-                      std::vector<std::array<double, 2>>{},
-                      std::vector<std::array<double, 2>>{},
-                      std::vector<std::array<double, 2>>{}};
-
-  for (auto &vec2 : vec2s) {
-    const bool bit_x = vec2[0] > mid;
-    const bool bit_y = vec2[1] > mid;
-
-    const uint8_t quad =
-        (static_cast<int>(bit_x) << 1) + static_cast<int>(bit_y);
-
-    maps[quad](vec2);
-    quads[quad].push_back(vec2);
-  }
-
-  for (auto &quad_vec2s : quads) {
-    run_sort_2d(quad_vec2s, mid);
-  }
-
-  std::vector<std::array<double, 2>> result;
-
-  for (const auto &quad : gray(2)) {
-    for (auto &vec2 : quads[quad]) {
-      invs[quad](vec2);
-    }
-
-    result.insert(result.end(), make_move_iterator(quads[quad].begin()),
-                  make_move_iterator(quads[quad].end()));
-  }
-
-  vec2s = result;
-}
-
 void run_sort_3d(std::vector<std::array<double, 3>> &vec3s, const double side) {
   if (is_base_3d(vec3s)) {
     return;
@@ -171,59 +159,26 @@ void run_sort_3d(std::vector<std::array<double, 3>> &vec3s, const double side) {
 
   const double mid = side / 2;
 
-  std::array<std::function<void(std::array<double, 3> &)>, 8> maps;
+  const std::array<std::function<void(std::array<double, 3> &)>, 8> maps{
+      [](auto &vec3) { vec3 = {vec3[2], vec3[0], vec3[1]}; },
+      [mid](auto &vec3) { vec3 = {vec3[1], vec3[2] - mid, vec3[0]}; },
+      [side, mid](auto &vec3) {
+        vec3 = {vec3[0], side - vec3[1], mid - vec3[2]};
+      },
+      [mid](auto &vec3) { vec3 = {vec3[1] - mid, vec3[2] - mid, vec3[0]}; },
 
-  maps[0b000] = [](std::array<double, 3> &vec3) {
-    vec3 = {vec3[2], vec3[0], vec3[1]};
-  };
-  maps[0b001] = [mid](std::array<double, 3> &vec3) {
-    vec3 = {vec3[1], vec3[2] - mid, vec3[0]};
-  };
-  maps[0b011] = [mid](std::array<double, 3> &vec3) {
-    vec3 = {vec3[1] - mid, vec3[2] - mid, vec3[0]};
-  };
-  maps[0b010] = [side, mid](std::array<double, 3> &vec3) {
-    vec3 = {vec3[0], side - vec3[1], mid - vec3[2]};
-  };
-  maps[0b110] = [side, mid](std::array<double, 3> &vec3) {
-    vec3 = {vec3[0] - mid, side - vec3[1], mid - vec3[2]};
-  };
-  maps[0b111] = [side, mid](std::array<double, 3> &vec3) {
-    vec3 = {side - vec3[1], vec3[2] - mid, side - vec3[0]};
-  };
-  maps[0b101] = [side, mid](std::array<double, 3> &vec3) {
-    vec3 = {mid - vec3[1], vec3[2] - mid, side - vec3[0]};
-  };
-  maps[0b100] = [side, mid](std::array<double, 3> &vec3) {
-    vec3 = {mid - vec3[2], side - vec3[0], vec3[1]};
-  };
-
-  std::array<std::function<void(std::array<double, 3> &)>, 8> invs;
-
-  invs[0b000] = [](std::array<double, 3> &vec3) {
-    vec3 = {vec3[1], vec3[2], vec3[0]};
-  };
-  invs[0b001] = [mid](std::array<double, 3> &vec3) {
-    vec3 = {vec3[2], vec3[0], vec3[1] + mid};
-  };
-  invs[0b011] = [mid](std::array<double, 3> &vec3) {
-    vec3 = {vec3[2], vec3[0] + mid, vec3[1] + mid};
-  };
-  invs[0b010] = [side, mid](std::array<double, 3> &vec3) {
-    vec3 = {vec3[0], side - vec3[1], mid - vec3[2]};
-  };
-  invs[0b110] = [side, mid](std::array<double, 3> &vec3) {
-    vec3 = {vec3[0] + mid, side - vec3[1], mid - vec3[2]};
-  };
-  invs[0b111] = [side, mid](std::array<double, 3> &vec3) {
-    vec3 = {side - vec3[2], side - vec3[0], vec3[1] + mid};
-  };
-  invs[0b101] = [side, mid](std::array<double, 3> &vec3) {
-    vec3 = {side - vec3[2], mid - vec3[0], vec3[1] + mid};
-  };
-  invs[0b100] = [side, mid](std::array<double, 3> &vec3) {
-    vec3 = {side - vec3[1], vec3[2], mid - vec3[0]};
-  };
+      [side, mid](auto &vec3) {
+        vec3 = {mid - vec3[2], side - vec3[0], vec3[1]};
+      },
+      [side, mid](auto &vec3) {
+        vec3 = {mid - vec3[1], vec3[2] - mid, side - vec3[0]};
+      },
+      [side, mid](auto &vec3) {
+        vec3 = {vec3[0] - mid, side - vec3[1], mid - vec3[2]};
+      },
+      [side, mid](auto &vec3) {
+        vec3 = {side - vec3[1], vec3[2] - mid, side - vec3[0]};
+      }};
 
   std::array octs = {std::vector<std::array<double, 3>>{},
                      std::vector<std::array<double, 3>>{},
@@ -253,7 +208,32 @@ void run_sort_3d(std::vector<std::array<double, 3>> &vec3s, const double side) {
 
   std::vector<std::array<double, 3>> result;
 
-  for (const auto &oct : gray(3)) {
+  const std::array<std::function<void(std::array<double, 3> &)>, 8> invs{
+      [](std::array<double, 3> &vec3) { vec3 = {vec3[1], vec3[2], vec3[0]}; },
+      [mid](std::array<double, 3> &vec3) {
+        vec3 = {vec3[2], vec3[0], vec3[1] + mid};
+      },
+      [side, mid](std::array<double, 3> &vec3) {
+        vec3 = {vec3[0], side - vec3[1], mid - vec3[2]};
+      },
+      [mid](std::array<double, 3> &vec3) {
+        vec3 = {vec3[2], vec3[0] + mid, vec3[1] + mid};
+      },
+
+      [side, mid](std::array<double, 3> &vec3) {
+        vec3 = {side - vec3[1], vec3[2], mid - vec3[0]};
+      },
+      [side, mid](std::array<double, 3> &vec3) {
+        vec3 = {side - vec3[2], mid - vec3[0], vec3[1] + mid};
+      },
+      [side, mid](std::array<double, 3> &vec3) {
+        vec3 = {vec3[0] + mid, side - vec3[1], mid - vec3[2]};
+      },
+      [side, mid](std::array<double, 3> &vec3) {
+        vec3 = {side - vec3[2], side - vec3[0], vec3[1] + mid};
+      }};
+
+  for (const auto oct : gray3) {
     for (auto &vec3 : octs[oct]) {
       invs[oct](vec3);
     }
@@ -263,17 +243,6 @@ void run_sort_3d(std::vector<std::array<double, 3>> &vec3s, const double side) {
   }
 
   vec3s = result;
-}
-
-auto is_base_2d(const std::vector<std::array<double, 2>> &vec2s) -> bool {
-  if (vec2s.size() < 2) {
-    return true;
-  }
-
-  const auto &first = vec2s[0];
-
-  return std::all_of(vec2s.begin() + 1, vec2s.end(),
-                     [&first](const auto &vec2) { return vec2 == first; });
 }
 
 auto is_base_3d(const std::vector<std::array<double, 3>> &vec3s) -> bool {

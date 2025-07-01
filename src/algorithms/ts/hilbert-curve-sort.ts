@@ -1,52 +1,12 @@
 export type Vec2 = [number, number];
 export type Vec3 = [number, number, number];
 
-export function sort2D(vec2s: Vec2[]): Vec2[] {
-	const [minx, maxx] = minmax(vec2s, 0);
-	const [miny, maxy] = minmax(vec2s, 1);
+type Maps2D = Record<number, (vec2: Vec2) => Vec2>;
+type Maps3D = Record<number, (vec3: Vec3) => Vec3>;
 
-	const sidex = maxx - minx;
-	const sidey = maxy - miny;
-	const bound = Math.max(sidex, sidey);
-
-	const scalex = bound === 0 || sidex === 0 ? 1 : bound / sidex;
-	const scaley = bound === 0 || sidey === 0 ? 1 : bound / sidey;
-
-	// Centering and scaling data to fit hypercube
-	const fitted = vec2s.map(([x, y]) => [scalex * (x - minx), scaley * (y - miny)]) as Vec2[];
-
-	// De-scaling and de-centering the results from actual sort
-	return runSort2D(fitted, bound).map(
-		([x, y]) => [x / scalex + minx, y / scaley + miny] as Vec2,
-	);
-}
-
-export function sort3D(vec3s: Vec3[]): Vec3[] {
-	const [minx, maxx] = minmax(vec3s, 0);
-	const [miny, maxy] = minmax(vec3s, 1);
-	const [minz, maxz] = minmax(vec3s, 2);
-
-	const sidex = maxx - minx;
-	const sidey = maxy - miny;
-	const sidez = maxz - minz;
-	const bound = Math.max(sidex, sidey, sidez);
-
-	const scalex = bound === 0 || sidex === 0 ? 1 : bound / sidex;
-	const scaley = bound === 0 || sidey === 0 ? 1 : bound / sidey;
-	const scalez = bound === 0 || sidez === 0 ? 1 : bound / sidez;
-
-	// Centering and scaling data to fit hypercube
-	const fitted = vec3s.map(([x, y, z]) => [
-		scalex * (x - minx),
-		scaley * (y - miny),
-		scalez * (z - minz),
-	]) as Vec3[];
-
-	// De-scaling and de-centering the results from actual sort
-	return runSort3D(fitted, bound).map(
-		([x, y, z]) => [x / scalex + minx, y / scaley + miny, z / scalez + minz] as Vec3,
-	);
-}
+// Gray Code defining orthants' order
+const gray2 = [0b00, 0b01, 0b11, 0b10];
+const gray3 = [0b000, 0b001, 0b011, 0b010, 0b110, 0b111, 0b101, 0b100];
 
 function minmax(vecs: number[][], i: number): [number, number] {
 	let min = Infinity;
@@ -68,12 +28,24 @@ function minmax(vecs: number[][], i: number): [number, number] {
 	return [min, max];
 }
 
-type Maps2D = Record<number, (vec2: Vec2) => Vec2>;
-type Maps3D = Record<number, (vec3: Vec3) => Vec3>;
+export function sort2D(vec2s: Vec2[]): Vec2[] {
+	const [minx, maxx] = minmax(vec2s, 0);
+	const [miny, maxy] = minmax(vec2s, 1);
 
-// Gray Code defining orthants' order
-function gray(n: number): number[] {
-	return [...Array(1 << n).keys()].map((bit) => bit ^ (bit >> 1));
+	const sidex = maxx - minx;
+	const sidey = maxy - miny;
+	const bound = Math.max(sidex, sidey);
+
+	const scalex = bound === 0 || sidex === 0 ? 1 : bound / sidex;
+	const scaley = bound === 0 || sidey === 0 ? 1 : bound / sidey;
+
+	// Centering and scaling data to fit hypercube
+	const fitted = vec2s.map(([x, y]) => [scalex * (x - minx), scaley * (y - miny)]) as Vec2[];
+
+	// De-scaling and de-centering the results from actual sort
+	return runSort2D(fitted, bound).map(
+		([x, y]) => [x / scalex + minx, y / scaley + miny] as Vec2,
+	);
 }
 
 function runSort2D(vec2s: Vec2[], side: number): Vec2[] {
@@ -112,7 +84,46 @@ function runSort2D(vec2s: Vec2[], side: number): Vec2[] {
 	const sorted = quads.map((vec2s, quad) => runSort2D(vec2s.map(maps[quad]), mid));
 
 	// Order quadrants w.r.t G_2 and inv-transform
-	return gray(2).flatMap((quad) => sorted[quad].map(invs[quad]));
+	return gray2.flatMap((quad) => sorted[quad].map(invs[quad]));
+}
+
+function isBase2D(vec2s: Vec2[]): boolean {
+	if (vec2s.length < 2) {
+		return true;
+	}
+
+	const first = vec2s[0];
+
+	return vec2s.slice(1).every((vec2) => {
+		return vec2[0] === first[0] && vec2[1] === first[1];
+	});
+}
+
+export function sort3D(vec3s: Vec3[]): Vec3[] {
+	const [minx, maxx] = minmax(vec3s, 0);
+	const [miny, maxy] = minmax(vec3s, 1);
+	const [minz, maxz] = minmax(vec3s, 2);
+
+	const sidex = maxx - minx;
+	const sidey = maxy - miny;
+	const sidez = maxz - minz;
+	const bound = Math.max(sidex, sidey, sidez);
+
+	const scalex = bound === 0 || sidex === 0 ? 1 : bound / sidex;
+	const scaley = bound === 0 || sidey === 0 ? 1 : bound / sidey;
+	const scalez = bound === 0 || sidez === 0 ? 1 : bound / sidez;
+
+	// Centering and scaling data to fit hypercube
+	const fitted = vec3s.map(([x, y, z]) => [
+		scalex * (x - minx),
+		scaley * (y - miny),
+		scalez * (z - minz),
+	]) as Vec3[];
+
+	// De-scaling and de-centering the results from actual sort
+	return runSort3D(fitted, bound).map(
+		([x, y, z]) => [x / scalex + minx, y / scaley + miny, z / scalez + minz] as Vec3,
+	);
 }
 
 function runSort3D(vec3s: Vec3[], side: number): Vec3[] {
@@ -169,19 +180,7 @@ function runSort3D(vec3s: Vec3[], side: number): Vec3[] {
 	const sorted = octs.map((octVec3s, oct) => runSort3D(octVec3s.map(maps[oct]), mid));
 
 	// Order octants w.r.t G_3 and inv-transform
-	return gray(3).flatMap((oct) => sorted[oct].map(invs[oct]));
-}
-
-function isBase2D(vec2s: Vec2[]): boolean {
-	if (vec2s.length < 2) {
-		return true;
-	}
-
-	const first = vec2s[0];
-
-	return vec2s.slice(1).every((vec2) => {
-		return vec2[0] === first[0] && vec2[1] === first[1];
-	});
+	return gray3.flatMap((oct) => sorted[oct].map(invs[oct]));
 }
 
 function isBase3D(vec3s: Vec3[]): boolean {
