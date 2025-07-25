@@ -119,4 +119,4 @@ when sorting a reasonable amount of points.
 ### Notes
 
 The algorithms could be used for fast approximations of the Travelling Salesman Problem. See
-[Details, Benchmark, and Visualization](https://github.com/CarbonicSoda/tsp-hilbert-curve-benchmark).
+[Details, Benchmark, and Visualization](https://github.com/CarbonicSoda/hilbert-tsp-benchmark).
