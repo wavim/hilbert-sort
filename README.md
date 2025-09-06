@@ -87,20 +87,16 @@ The space complexity of the algorithm is expected to be quite high, as recursion
 
 ### Demo
 
+The algorithm could be used for fast approximations of the Travelling Salesman Problem. See
+[Benchmark and Visualization](https://github.com/wavim/hilbert-tsp-bench).
+
 An interactive demo is available at [Hilbert Sort](https://wavim.github.io/hilbert-sort). It
 includes:
 
 #### 2D Point Sorting
 
-Connects 2D points through sorting.
-
-> Notice it would roughly approximate a Hilbert Curve.
+Notice it would roughly approximate a Hilbert Curve.
 
 #### RGB Color Sorting
 
-Sorts colors with $(R, G, B)$ as the color vector.
-
-> The result would be more gradient than the original.
-
-The algorithm could be used for fast approximations of the Travelling Salesman Problem. See
-[Benchmark and Visualization](https://github.com/wavim/hilbert-tsp-bench).
+The result would be more gradient than the original.
