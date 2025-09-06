@@ -1,61 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans&display=swap");
+@import "tailwindcss";
 
-.flex {
-	display: flex;
-	flex-wrap: wrap;
-}
-
-.col {
-	flex-direction: column;
-}
-
-.align {
-	align-items: center;
-}
-
-.justify {
-	justify-content: center;
-}
-
-.gap {
-	gap: 3rem;
-}
-
-body {
-	background-color: oklch(0.97 0 0);
-}
-
-h1 {
-	font:
-		5rem "Montserrat",
-		sans-serif;
-}
-
-section {
-	width: 100%;
-}
-
-textarea {
-	width: 15rem;
-	height: 15rem;
-	resize: none;
-
-	padding-block: 0.5rem;
-	padding-inline: 1rem;
-
-	font: 2rem monospace;
-}
-
-input {
-	padding-block: 0.5rem;
-	padding-inline: 1rem;
-	width: 15rem;
-
-	font: 2rem monospace;
-}
-
-button {
-	padding-block: 0.5rem;
-
-	font: 2rem monospace;
+@theme {
+    --font-main: "Plus Jakarta Sans", sans-serif;
 }

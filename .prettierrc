@@ -14,5 +14,7 @@
 	"quoteProps": "consistent",
 	"singleAttributePerLine": true,
 
-	"overrides": [{ "files": ["*.md"], "options": { "useTabs": false } }]
+	"overrides": [{ "files": ["*.md"], "options": { "useTabs": false } }],
+
+	"plugins": ["prettier-plugin-tailwindcss"]
 }
