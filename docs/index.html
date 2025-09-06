@@ -11,18 +11,18 @@
 			rel="icon"
 			href="https://avatars.githubusercontent.com/u/156987370"
 		/>
-		<script type="module" crossorigin src="./assets/index-DBGMiMeC.js"></script>
-		<link rel="stylesheet" crossorigin href="./assets/index-Djq7_g1y.css">
+		<script type="module" crossorigin src="./assets/index-D0TMWsRP.js"></script>
+		<link rel="stylesheet" crossorigin href="./assets/index-C981D8hv.css">
 	</head>
 	<body>
-		<main class="m-8 flex flex-col items-center gap-8 rounded-4xl bg-neutral-100 p-12">
+		<main class="m-8 flex flex-col items-center gap-16 rounded-4xl bg-neutral-100 p-12">
 			<section class="flex w-full flex-col gap-8">
 				<h2 class="font-main text-4xl">2D Points</h2>
 				<div class="flex flex-col gap-8 md:flex-row">
 					<canvas
 						id="points-result"
 						class="aspect-square w-1/2 rounded-xl bg-neutral-950 p-4"
-						>sorted 2d points connected</canvas
+						>sorted: connected points</canvas
 					>
 					<div
 						class="font-main flex flex-1 flex-col gap-8 p-12 text-4xl"
@@ -32,9 +32,9 @@
 							<input
 								id="points-cnt"
 								type="range"
-								step="1000"
-								max="11000"
+								step="500"
 								min="1000"
+								max="10000"
 							/>
 						</label>
 						<label class="flex flex-col gap-4">
@@ -43,11 +43,36 @@
 								id="points-std"
 								type="range"
 								step="0.05"
-								max="1.0"
 								min="0.1"
+								max="1.0"
 							/>
 						</label>
 					</div>
+				</div>
+			</section>
+			<section class="flex w-full flex-col gap-8">
+				<h2 class="font-main text-4xl">RGB Colors</h2>
+				<div class="flex flex-col gap-8">
+					<canvas
+						id="colors-before"
+						class="h-28 w-full rounded-xl"
+						>before: rgb spectrum</canvas
+					>
+					<canvas
+						id="colors-result"
+						class="h-28 w-full rounded-xl"
+						>sorted: rgb spectrum</canvas
+					>
+					<label class="font-main flex flex-col gap-4 text-4xl">
+						<span>Count</span>
+						<input
+							id="colors-cnt"
+							type="range"
+							step="5"
+							min="5"
+							max="255"
+						/>
+					</label>
 				</div>
 			</section>
 		</main>

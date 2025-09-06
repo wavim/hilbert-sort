@@ -17,7 +17,7 @@
 		/>
 	</head>
 	<body>
-		<main class="m-8 flex flex-col items-center gap-8 rounded-4xl bg-neutral-100 p-12">
+		<main class="m-8 flex flex-col items-center gap-16 rounded-4xl bg-neutral-100 p-12">
 			<section class="flex w-full flex-col gap-8">
 				<h2 class="font-main text-4xl">2D Points</h2>
 				<div class="flex flex-col gap-8 md:flex-row">
@@ -50,6 +50,31 @@
 							/>
 						</label>
 					</div>
+				</div>
+			</section>
+			<section class="flex w-full flex-col gap-8">
+				<h2 class="font-main text-4xl">RGB Colors</h2>
+				<div class="flex flex-col gap-8">
+					<canvas
+						id="colors-before"
+						class="h-28 w-full rounded-xl"
+						>before: rgb spectrum</canvas
+					>
+					<canvas
+						id="colors-result"
+						class="h-28 w-full rounded-xl"
+						>sorted: rgb spectrum</canvas
+					>
+					<label class="font-main flex flex-col gap-4 text-4xl">
+						<span>Count</span>
+						<input
+							id="colors-cnt"
+							type="range"
+							step="5"
+							min="5"
+							max="255"
+						/>
+					</label>
 				</div>
 			</section>
 		</main>
