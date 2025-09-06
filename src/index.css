@@ -2,5 +2,5 @@
 @import "tailwindcss";
 
 @theme {
-    --font-main: "Plus Jakarta Sans", sans-serif;
+	--font-main: "Plus Jakarta Sans", sans-serif;
 }

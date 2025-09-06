@@ -49,7 +49,7 @@ function updatePoints(): void {
 }
 updatePoints();
 
-pointsCntInput.oninput = pointsStdInput.oninput = updatePoints;
+pointsCntInput.oninput = pointsStdInput.oninput = pointsResult.onclick = updatePoints;
 
 const colorsCntInput = document.getElementById("colors-cnt") as HTMLInputElement;
 const colorsBefore = document.getElementById("colors-before") as HTMLCanvasElement;
@@ -91,4 +91,4 @@ function updateColors(): void {
 }
 updateColors();
 
-colorsCntInput.oninput = updateColors;
+colorsCntInput.oninput = colorsBefore.onclick = colorsResult.onclick = updateColors;
