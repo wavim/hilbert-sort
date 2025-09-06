@@ -28,8 +28,6 @@ function randomPoints(n: number, std: number): Vec2[] {
 }
 
 function renderPoints(points: Vec2[]): void {
-	pointsResult.height = pointsResult.width; // also resets canvas
-
 	const ctx = pointsResult.getContext("2d")!;
 	const len = points.length;
 
@@ -44,6 +42,8 @@ function renderPoints(points: Vec2[]): void {
 }
 
 function updatePoints(): void {
+	pointsResult.width = pointsResult.height = pointsResult.clientWidth; // resets canvas
+
 	const points = randomPoints(pointsCntInput.valueAsNumber, pointsStdInput.valueAsNumber);
 	renderPoints(sort2D(points));
 }
