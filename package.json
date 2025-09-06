@@ -10,18 +10,18 @@
 		"build": "vite build"
 	},
 	"devDependencies": {
-		"@eslint/js": "^9.29.0",
+		"@eslint/js": "^9.35.0",
 		"@rollup/plugin-node-resolve": "^16.0.1",
 		"@rollup/plugin-terser": "^0.4.4",
-		"@stylistic/eslint-plugin": "^5.0.0",
+		"@stylistic/eslint-plugin": "^5.3.1",
 		"@tailwindcss/vite": "^4.1.13",
-		"eslint": "^9.29.0",
-		"eslint-config-prettier": "^10.1.5",
-		"prettier": "^3.6.1",
+		"eslint": "^9.35.0",
+		"eslint-config-prettier": "^10.1.8",
+		"prettier": "^3.6.2",
 		"prettier-plugin-tailwindcss": "^0.6.14",
 		"tailwindcss": "^4.1.13",
-		"typescript": "^5.8.3",
-		"typescript-eslint": "^8.35.0",
-		"vite": "^6.0.11"
+		"typescript": "^5.9.2",
+		"typescript-eslint": "^8.42.0",
+		"vite": "^7.1.4"
 	}
 }
