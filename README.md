@@ -9,7 +9,7 @@ which works in arbitrary dimensions by not relying on recursive geometry alignme
 This repository contains recursion-based implementation of Hilbert sorting algorithms for $R^2$ and
 $R^3$ in C++ and TypeScript.
 
-### Motive
+### Motivation
 
 Sorting by intuition gives an ordering of a set where the distance between neighboring elements is
 minimized. It is heavily used for DB indexing, visualization and a myriad of other purposes.
