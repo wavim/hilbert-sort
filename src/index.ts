@@ -33,8 +33,8 @@ function renderPoints(points: Vec2[]): void {
 
 	for (let i = 0; i < len; i++) {
 		ctx.beginPath();
-		ctx.moveTo(...points.at(i - 1)!);
-		ctx.lineTo(...points.at(i)!);
+		ctx.moveTo(...points[i > 0 ? i - 1 : 0]);
+		ctx.lineTo(...points[i]);
 
 		ctx.strokeStyle = `hsl(${(i / (len - 1)) * 360} 100 50)`;
 		ctx.stroke();
